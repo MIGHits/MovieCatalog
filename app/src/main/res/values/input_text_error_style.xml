@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="inputFieldTextError">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/manrope_medium</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/errorColor</item>
+    </style>
+</resources>

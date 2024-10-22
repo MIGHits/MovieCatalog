@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screenBackgroundDark">
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sub_container_round_corners"
+        android:maxHeight="348dp"
+        android:outlineProvider="background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/imageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="348dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageContainer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageLayout"
+                app:srcCompat="@drawable/image_container1" />
+
+            <ImageView
+                android:id="@+id/imageContainer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageContainer1"
+                app:srcCompat="@drawable/image_container2" />
+
+            <ImageView
+                android:id="@+id/imageContainer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageContainer2"
+                app:srcCompat="@drawable/image_container3" />
+
+            <ImageView
+                android:id="@+id/imageContainer4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageContainer3"
+                app:srcCompat="@drawable/image_container4" />
+
+            <ImageView
+                android:id="@+id/imageContainer5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageContainer4"
+                app:srcCompat="@drawable/image_container5" />
+
+            <ImageView
+                android:id="@+id/imageContainer6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="@+id/imageContainer5"
+                app:srcCompat="@drawable/image_container6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="434dp"
+            android:background="@drawable/fadeout_top"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/bottomFadeout"
+            android:layout_width="match_parent"
+            android:layout_height="174dp"
+            android:background="@drawable/fadeout_bottom"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="364dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+        <LinearLayout
+            android:id="@+id/inputLayout"
+            android:layout_width="364dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/register"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/input_field_style"
+                android:backgroundTint="@color/DarkFaded"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <EditText
+                    android:id="@+id/login"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/login"
+                    android:inputType="textPersonName"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/deleteLogin"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/closeicon"
+                    android:src="@drawable/close_icon"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/loginError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textAppearance="@style/inputFieldTextError"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_field_style"
+                android:backgroundTint="@color/DarkFaded"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/deleteEmail"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/closeicon"
+                    android:src="@drawable/close_icon"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/emailError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textAppearance="@style/inputFieldTextError"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_field_style"
+                android:backgroundTint="@color/DarkFaded"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/username"
+                    android:inputType="textPersonName"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/deleteName"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/closeicon"
+                    android:src="@drawable/close_icon"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/nameError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textAppearance="@style/inputFieldTextError"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_field_style"
+                android:backgroundTint="@color/DarkFaded"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/passwordVisibility"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/passwordVisibility"
+                    android:src="@drawable/eye_on"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/passwordError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textAppearance="@style/inputFieldTextError"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_field_style"
+                android:backgroundTint="@color/DarkFaded"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <EditText
+                    android:id="@+id/passwordConfirm"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/passwordConfirmation"
+                    android:inputType="textPassword"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/passwordConfirmVisibility"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/passwordVisibility"
+                    android:src="@drawable/eye_on"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/passwordConfirmError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textAppearance="@style/inputFieldTextError"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_field_style"
+                android:paddingLeft="16dp"
+                android:paddingTop="14dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="14dp">
+
+                <TextView
+                    android:id="@+id/birthDate"
+                    android:layout_width="300dp"
+                    android:layout_height="20sp"
+                    android:background="@color/GrayFaded"
+                    android:backgroundTint="@color/DarkFaded"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:hint="@string/birthDate"
+                    android:inputType="date"
+                    android:lineHeight="20sp"
+                    android:padding="0dp"
+                    android:textAppearance="@style/inputFieldText"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/GrayFaded"
+                    android:textFontWeight="700"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/changeDate"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/DarkFaded"
+                    android:contentDescription="@string/calender"
+                    android:src="@drawable/calender_off"
+                    android:visibility="visible" />
+                <TextView
+                    android:id="@+id/birthDateError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textAppearance="@style/inputFieldTextError"/>
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp">
+
+                <android.widget.Button
+                    android:id="@+id/male"
+                    android:layout_width="182dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gender_button_primary"
+                    android:text="@string/male"
+                    android:textAppearance="@style/buttonText" />
+
+                <android.widget.Button
+                    android:id="@+id/female"
+                    android:layout_width="182dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="182dp"
+                    android:background="@color/DarkFaded"
+                    android:text="@string/female"
+                    android:textAppearance="@style/buttonText" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+
+    <android.widget.Button
+        android:id="@+id/register"
+        android:layout_width="364dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="48dp"
+        android:background="@drawable/secondary_button_shape"
+        android:enabled="false"
+        android:text="@string/registration"
+        android:textAppearance="@style/buttonTextNotActive"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+
+        <android.widget.Button
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/back_button_style"
+            android:contentDescription="@string/backbutton"
+            android:drawableStart="@drawable/back_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/manrope_medium"
+            android:lineHeight="32sp"
+            android:text="@string/sign_up_screen_header"
+            android:textColor="@color/white"
+            android:textFontWeight="700"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

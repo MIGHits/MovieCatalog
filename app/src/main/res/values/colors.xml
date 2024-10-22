@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="errorColor">#FF0000</color>
+    <color name="screenBackgroundDark">#1E1E1E</color>
+    <color name="bottomFadeoutFirst">#001A1A1A</color>
+    <color name="bottomFadeoutSecond">#FF1A1A1A</color>
+    <color name="topFadeoutSecond">#001E1E1E</color>
+    <color name="primaryButtonDefault1">#DF2800</color>
+    <color name="primaryButtonDefault2">#FF6633</color>
+    <color name="DarkFaded">#333333</color>
+    <color name="GrayFaded">#999999</color>
+</resources>

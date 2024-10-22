@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="inputFieldText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/manrope_medium</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+</resources>
