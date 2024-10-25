@@ -18,4 +18,12 @@
     <string name="closeicon">closeIcon</string>
     <string name="passwordVisibility">eyeOff/eyeOn</string>
     <string name="calender">calenderIcon</string>
+    <string name="feed">Лента</string>
+    <string name="films">Фильмы</string>
+    <string name="library">Избранное</string>
+    <string name="profile">Профиль</string>
+    <string name="movie_tittle">Название</string>
+    <string name="movie_country">Страна/год</string>
+    <string name="genres_1">Жанр1</string>
+    <string name="second_genre">Жанр2</string>
 </resources>

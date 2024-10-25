@@ -11,4 +11,6 @@
     <color name="primaryButtonDefault2">#FF6633</color>
     <color name="DarkFaded">#333333</color>
     <color name="GrayFaded">#999999</color>
+    <color name="TextGray">#CCCCCC</color>
+    <color name="Accent">#EF3A01</color>
 </resources>

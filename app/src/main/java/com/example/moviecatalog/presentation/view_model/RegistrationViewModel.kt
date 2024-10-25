@@ -1,30 +1,37 @@
 package com.example.moviecatalog.presentation.view_model
 
+import android.content.Context
+import android.content.Intent
 import android.icu.util.Calendar
 import android.text.InputType
 import android.view.View
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.R
+import com.example.moviecatalog.common.Constants.EXCEPTION_ERROR
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
-import com.example.moviecatalog.data.data.remote.entities.UserRegisterModelDTO
-import com.example.moviecatalog.domain.entity.UserRegisterModel
+import com.example.moviecatalog.common.Constants.UNIQUE_LOGIN_ERROR
 import com.example.moviecatalog.domain.usecase.DateConverter
-import com.example.moviecatalog.domain.usecase.Validation.RegisterUseCase
+import com.example.moviecatalog.domain.usecase.RegisterUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateBirthDateUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateEmailUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateLoginUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordConfirmUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateNameField
-import com.example.moviecatalog.presentation.model.RegistrationCredentials
-import com.example.moviecatalog.presentation.model.ButtonState
+import com.example.moviecatalog.presentation.entity.RegistrationCredentials
+import com.example.moviecatalog.presentation.entity.UserRegisterUIModel
+import com.example.moviecatalog.presentation.state.ButtonState
 import com.example.moviecatalog.presentation.state.RegistrationState
 import com.example.moviecatalog.presentation.state.RegistrationUIState
+import com.example.moviecatalog.presentation.view.AppNavigationActivity
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCase,
                             private val validateEmailUseCase:ValidateEmailUseCase,
@@ -40,14 +47,7 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
     val registrationState:StateFlow<RegistrationState> get() = _registrationState
 
     private val _registration = MutableStateFlow(
-        RegistrationCredentials(
-        userName = INITIAL_FIELD_STATE,
-        name = INITIAL_FIELD_STATE,
-        password = INITIAL_FIELD_STATE,
-        passwordConfirm = INITIAL_FIELD_STATE,
-        email = INITIAL_FIELD_STATE,
-        birthDate = INITIAL_FIELD_STATE
-    ))
+        RegistrationCredentials())
     val registration:StateFlow<RegistrationCredentials> get() =  _registration
 
     private val _registrationUI = MutableStateFlow(RegistrationUIState())
@@ -128,8 +128,8 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
         }
     }
 
-    fun createUserAccount(): UserRegisterModel{
-       return UserRegisterModel(
+    fun createUserAccount(): UserRegisterUIModel{
+       return UserRegisterUIModel(
             userName = _registration.value.userName,
             name = _registration.value.name,
             password = _registration.value.password,
@@ -139,7 +139,7 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
         )
     }
 
-    fun isValid():ButtonState{
+    fun isValid(): ButtonState {
        val buttonState = validateLoginUseCase(_registration.value.userName).status &&
         validateEmailUseCase(_registration.value.email).status &&
         validateNameField(_registration.value.name).status &&
@@ -210,10 +210,34 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
         _registration.value = _registration.value.copy(gender = value)
     }
 
-    fun registerUser(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val registrationBody = createUserAccount()
-            registerUseCase(registrationBody)
+    private fun changeErrorMessageVisibility(message:String){
+        _registration.value =
+            _registration.value.copy(exceptionError = message)
+        _registrationUI.value =
+            _registrationUI.value.copy(registrationError = View.VISIBLE)
+    }
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        when(exception){
+            is HttpException->{
+                when(exception.code()){
+                    400-> changeErrorMessageVisibility(UNIQUE_LOGIN_ERROR)
+                }
+            }
+            else-> changeErrorMessageVisibility(EXCEPTION_ERROR)
         }
+    }
+
+    private fun successfulRegister(context: Context){
+        val intent = Intent(context, AppNavigationActivity::class.java)
+        startActivity(context,intent,null)
+    }
+
+    fun registerUser(context: Context) = viewModelScope.launch(exceptionHandler) {
+        val registrationBody = createUserAccount()
+        registerUseCase(registrationBody)
+        _registrationUI.value =
+        _registrationUI.value.copy(registrationError = View.GONE)
+        successfulRegister(context)
     }
 }

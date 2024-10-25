@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="navigationBarText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/TextGray</item>
+        <item name="android:fontFamily">@font/manrope_semibold</item>
+        <item name="android:lineHeight">14.4sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="navigationBarTextActive">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/Accent</item>
+        <item name="android:fontFamily">@font/manrope_medium</item>
+        <item name="android:lineHeight">14.4sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+</resources>

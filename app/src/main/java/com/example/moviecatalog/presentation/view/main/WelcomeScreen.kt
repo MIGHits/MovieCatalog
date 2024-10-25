@@ -19,14 +19,12 @@ class WelcomeScreen:Fragment(R.layout.welcome_screen) {
     private fun navigateAccountEntrance(){
         parentFragmentManager.beginTransaction()
             .replace(R.id.welcome_screen_layer,SignInScreen())
-            .addToBackStack(null)
             .commit()
     }
 
     private  fun navigateRegistration(){
         parentFragmentManager.beginTransaction()
             .replace(R.id.welcome_screen_layer,SignUpScreen())
-            .addToBackStack(null)
             .commit()
     }
 

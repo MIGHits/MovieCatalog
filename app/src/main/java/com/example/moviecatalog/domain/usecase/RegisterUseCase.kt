@@ -1,11 +1,11 @@
-package com.example.moviecatalog.domain.usecase.Validation
+package com.example.moviecatalog.domain.usecase
 
 import com.example.moviecatalog.data.data.remote.entities.UserRegisterModelDTO
-import com.example.moviecatalog.domain.entity.UserRegisterModel
 import com.example.moviecatalog.domain.repository.AuthRepository
+import com.example.moviecatalog.presentation.entity.UserRegisterUIModel
 
 class RegisterUseCase(private val authRepository: AuthRepository){
-    operator suspend fun invoke(registerCredentials: UserRegisterModel){
+    suspend operator fun invoke(registerCredentials: UserRegisterUIModel){
         authRepository.register(
             UserRegisterModelDTO(
                 userName = registerCredentials.userName,

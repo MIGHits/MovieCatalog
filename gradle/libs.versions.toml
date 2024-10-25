@@ -3,15 +3,16 @@ agp = "8.6.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
+kotlinStdlibJdk7 = "1.9.20"
 lifecycleViewmodelKtx = "2.8.6"
 logging-interceptor = "4.11.0"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-appcompat = "1.7.0"
 kotlinxSerializationJson = "1.7.3"
+picassoVersion = "2.71828"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 material = "1.12.0"
-activity = "1.9.2"
+activity = "1.9.3"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
 room = "2.6.1"
@@ -24,7 +25,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlinStdlibJdk7" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging-interceptor" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -36,6 +37,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 ksp-symbol-processing = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+squareup-picasso = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

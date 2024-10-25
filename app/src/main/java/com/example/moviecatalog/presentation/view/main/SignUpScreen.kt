@@ -17,8 +17,8 @@ import com.example.moviecatalog.common.Constants.FEMALE
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.common.Constants.MALE
 import com.example.moviecatalog.databinding.SignUpScreenBinding
-import com.example.moviecatalog.presentation.model.FieldAction
-import com.example.moviecatalog.presentation.model.RegistrationCredentials
+import com.example.moviecatalog.presentation.entity.FieldAction
+import com.example.moviecatalog.presentation.entity.RegistrationCredentials
 import com.example.moviecatalog.presentation.state.RegistrationUIState
 import com.example.moviecatalog.presentation.view_model.RegistrationViewModel
 import com.example.moviecatalog.presentation.view_model.RegistrationViewModelFactory
@@ -41,14 +41,20 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         super.onViewCreated(view, savedInstanceState)
         binding = SignUpScreenBinding.bind(view)
 
-        binding?.constraintLayout2?.clipToOutline = true
-        binding?.backButton?.setOnClickListener{parentFragmentManager.popBackStack()}
-        binding?.register?.setOnClickListener{viewModel.registerUser()}
-
         setFieldsListeners()
         subscribeRegistration(viewModel)
         subscribeUIState(viewModel)
         setValidationFields(viewModel)
+
+        binding?.constraintLayout2?.clipToOutline = true
+        binding?.backButton?.setOnClickListener{
+            parentFragment?.parentFragmentManager?.popBackStack()}
+        binding?.register?.setOnClickListener{
+           lifecycleScope.launch {
+               viewModel.registerUser(requireContext()).join()
+               subscribeRegistrationError()
+           }
+        }
     }
 
     override fun onDestroyView() {
@@ -67,8 +73,18 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         }
     }
 
+    private fun subscribeRegistrationError(){
+        binding?.apply {
+            registrationError.visibility =
+                registrationUIState.registrationError
+            registrationError.text =
+                registrationCredentials.exceptionError
+        }
+    }
+
     private fun setFieldsListeners(){
         binding?.apply {
+
             deleteLogin.setOnClickListener{
                 login.setText(INITIAL_FIELD_STATE)
                 viewModel.setLogin(login.text.toString())
@@ -152,6 +168,7 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
             }
         }
     }
+
 
     private fun setValidationFields(viewModel: RegistrationViewModel) {
         binding?.apply {

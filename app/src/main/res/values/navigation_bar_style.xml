@@ -1,0 +1,22 @@
+<resources>
+    <style name="navbarStyle" parent="Widget.MaterialComponents.BottomNavigationView">>
+        <item name="compatShadowEnabled">true</item>
+        <item name="elevation">8dp</item>
+        <item name="enforceTextAppearance">true</item>
+        <item name="enforceMaterialTheme">false</item>
+        <item name="itemBackground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="itemIconTint">@color/TextGray</item>
+        <item name="itemTextColor">@null</item>
+        <item name="itemTextAppearanceActive">@style/navigationBarTextActive</item>
+        <item name="itemTextAppearanceInactive">@style/navigationBarText</item>
+        <item name="itemHorizontalTranslationEnabled">true</item>
+        <item name="itemIconSize">24dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">8dp</item>
+        <item name="itemActiveIndicatorStyle">@null</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="itemRippleColor">@color/cardview_shadow_end_color</item>
+    </style>
+
+</resources>

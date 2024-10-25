@@ -272,4 +272,17 @@
             android:textSize="24sp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/exceptionError"
+        android:layout_width="364dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/inputFieldTextError"
+        android:visibility="gone"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/entry"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputLayoutScroller" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

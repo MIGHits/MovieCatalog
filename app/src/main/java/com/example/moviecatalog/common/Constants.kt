@@ -6,6 +6,9 @@ object Constants{
     const val EMAIL_PATTERN = "[a-zA-Z0-9._-]{4,}+@[a-z]+\\.+[a-z]{2,}+"
     const val INITIAL_FIELD_STATE = ""
     const val EMPTY_FIELD_ERROR = "Поле не может быть пустым"
+    const val UNIQUE_LOGIN_ERROR = "Указанный логин уже занят"
+    const val LOGIN_EXCEPTION = "Неправильный логин или пароль"
+    const val EXCEPTION_ERROR = "Проверьте соединение с сетью"
     const val LOGIN_ERROR = "Логин должен содержать не менее 2 латинских букв"
     const val PASSWORD_ERROR = "Минимальная длина пароля 6 символов"
     const val PASSWORD_CONFIRM_ERROR = "Пароли не совпадают"
@@ -13,6 +16,10 @@ object Constants{
 
     const val PREFS_NAME = "Token Storage"
     const val TOKEN_KEY = "token"
+
+    const val MOVIE_TITTLE = "Название Фильма:"
+    const val MOVIE_COUNTRY = "Страна Фильма"
+
 
     const val MALE = 0
     const val FEMALE = 1

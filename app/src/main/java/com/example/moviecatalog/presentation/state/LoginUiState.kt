@@ -7,5 +7,6 @@ import com.example.moviecatalog.R
 data class LoginUiState(
     val loginIconVisibility: Int = View.INVISIBLE,
     val passwordCurrentIcon: Int = R.drawable.eye_on,
-    val passwordCurrentInputType:Int = InputType.TYPE_TEXT_VARIATION_PASSWORD
+    val passwordCurrentInputType:Int = InputType.TYPE_TEXT_VARIATION_PASSWORD,
+    val exceptionErrorView:Int = View.GONE
 )

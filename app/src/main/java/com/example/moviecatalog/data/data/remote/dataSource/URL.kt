@@ -5,4 +5,6 @@ object URL {
     const val REGISTER:String = "api/account/register"
     const val LOGIN:String = "api/account/login"
     const val LOGOUT:String = "api/account/logout"
+    const val MOVIE_PAGE:String = "/api/movies/{page}"
+    const val MOVIE_DETAILS:String = "/api/movies/details/{id}"
 }

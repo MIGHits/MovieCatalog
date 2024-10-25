@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.enableEdgeToEdge
@@ -18,52 +19,53 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val context = MovieCatalogApplication.instance
-        val pref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        println(pref.getString(TOKEN_KEY,"1"))
         val rootView = findViewById<View>(android.R.id.content)
-        hideNavigationBar()
+        hideNavigationBar(this.window)
         if (savedInstanceState == null){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer,WelcomeScreen())
                 .commit()
             enableEdgeToEdge()
-            addKeybordListener(rootView)
+            addKeybordListener(rootView,this.window)
         }
 
     }
-    private fun hideNavigationBar(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.let { controller ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                }
-            }
-        }
-    }
-
-    private  fun showNavigationBar(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.let { controller ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    controller.show(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+    companion object {
+        fun hideNavigationBar(window: Window) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.let { controller ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        controller.systemBarsBehavior =
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    }
                 }
             }
         }
-    }
 
-    private  fun addKeybordListener(rootView:View){
-        rootView.setOnApplyWindowInsetsListener { _, insets ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                insets.isVisible(WindowInsets.Type.ime())) {
-                showNavigationBar()
-            } else {
-                hideNavigationBar()
+        fun showNavigationBar(window: Window) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.let { controller ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        controller.show(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+                    }
+                }
             }
-            insets
+        }
+
+        fun addKeybordListener(rootView: View,window: Window) {
+            rootView.setOnApplyWindowInsetsListener { _, insets ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                    insets.isVisible(WindowInsets.Type.ime())
+                ) {
+                    showNavigationBar(window)
+                } else {
+                    hideNavigationBar(window)
+                }
+                insets
+            }
         }
     }
 }

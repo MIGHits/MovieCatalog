@@ -7,21 +7,21 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.moviecatalog.R
+import com.example.moviecatalog.R.*
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.databinding.SignInScreenBinding
-import com.example.moviecatalog.presentation.model.FieldAction
-import com.example.moviecatalog.presentation.model.LoginCredentials
+import com.example.moviecatalog.presentation.entity.FieldAction
+import com.example.moviecatalog.presentation.entity.LoginCredentials
 import com.example.moviecatalog.presentation.state.LoginUiState
+import com.example.moviecatalog.presentation.view.MainActivity
 import com.example.moviecatalog.presentation.view_model.LoginViewModel
 import com.example.moviecatalog.presentation.view_model.LoginViewModelFactory
-import com.example.moviecatalog.presentation.view_model.RegistrationViewModel
 import kotlinx.coroutines.launch
 
-class SignInScreen:Fragment(R.layout.sign_in_screen){
+class SignInScreen:Fragment(layout.sign_in_screen){
     private var binding:SignInScreenBinding? = null
     private lateinit var  loginCredentials: LoginCredentials
     private lateinit var  loginUIState: LoginUiState
@@ -39,7 +39,17 @@ class SignInScreen:Fragment(R.layout.sign_in_screen){
 
         binding = SignInScreenBinding.bind(view)
         binding?.mainConstraint?.clipToOutline = true
-        binding?.backButton?.setOnClickListener{parentFragmentManager.popBackStack()}
+        binding?.backButton?.setOnClickListener{
+            parentFragment?.parentFragmentManager?.popBackStack()
+        }
+
+        binding?.entry?.setOnClickListener{
+            lifecycleScope.launch {
+                viewModel.loginUser(requireContext()).join()
+                subscribeErrorMessage()
+            }
+        }
+
         subscribeLogin(viewModel)
         subscribeLoginUi(viewModel)
         setListeners(viewModel)
@@ -49,6 +59,15 @@ class SignInScreen:Fragment(R.layout.sign_in_screen){
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun subscribeErrorMessage(){
+        binding?.apply {
+            exceptionError.visibility =
+                loginUIState.exceptionErrorView
+            exceptionError.text =
+                loginCredentials.exceptionError
+        }
     }
 
 

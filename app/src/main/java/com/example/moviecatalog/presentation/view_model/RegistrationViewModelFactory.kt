@@ -7,7 +7,7 @@ import com.example.moviecatalog.data.data.remote.dataSource.AuthServiceProvider
 import com.example.moviecatalog.data.data.repository.AuthRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
 import com.example.moviecatalog.domain.usecase.DateConverter
-import com.example.moviecatalog.domain.usecase.Validation.RegisterUseCase
+import com.example.moviecatalog.domain.usecase.RegisterUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateBirthDateUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateEmailUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateLoginUseCase

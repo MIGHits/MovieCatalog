@@ -34,6 +34,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+
     }
 
     buildFeatures{
@@ -42,6 +43,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlin.stdlib.jdk7)
+    implementation (libs.squareup.picasso)
     implementation (libs.converter.gson)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.retrofit)
@@ -52,7 +55,6 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.ksp.symbol.processing)
     implementation(libs.room.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)

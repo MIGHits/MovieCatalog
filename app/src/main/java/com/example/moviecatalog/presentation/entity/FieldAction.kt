@@ -1,4 +1,4 @@
-package com.example.moviecatalog.presentation.model
+package com.example.moviecatalog.presentation.entity
 
 import android.widget.EditText
 
