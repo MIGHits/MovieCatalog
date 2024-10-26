@@ -12,6 +12,7 @@ import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.EXCEPTION_ERROR
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.common.Constants.UNIQUE_LOGIN_ERROR
+import com.example.moviecatalog.domain.entity.UserRegisterModel
 import com.example.moviecatalog.domain.usecase.DateConverter
 import com.example.moviecatalog.domain.usecase.RegisterUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateBirthDateUseCase
@@ -128,8 +129,8 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
         }
     }
 
-    fun createUserAccount(): UserRegisterUIModel{
-       return UserRegisterUIModel(
+    fun createUserAccount(): UserRegisterModel {
+       return UserRegisterModel(
             userName = _registration.value.userName,
             name = _registration.value.name,
             password = _registration.value.password,

@@ -6,11 +6,6 @@ import com.example.moviecatalog.domain.repository.AuthRepository
 
 class LoginUseCase(private val authRepository: AuthRepository) {
     suspend operator fun invoke(loginCredentials: LoginBody){
-        authRepository.login(
-            LoginCredentialsDTO(
-                username =  loginCredentials.username,
-                password =  loginCredentials.password
-            )
-        )
+        authRepository.login(loginCredentials)
     }
 }

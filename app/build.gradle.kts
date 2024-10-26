@@ -43,6 +43,9 @@ android {
 }
 
 dependencies {
+    implementation (libs.storiesprogressview.v30){
+        exclude ("com.android.support")
+    }
     implementation(libs.kotlin.stdlib.jdk7)
     implementation (libs.squareup.picasso)
     implementation (libs.converter.gson)

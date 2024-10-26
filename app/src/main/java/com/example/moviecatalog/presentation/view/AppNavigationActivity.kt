@@ -10,6 +10,7 @@ import com.example.moviecatalog.R
 import com.example.moviecatalog.databinding.ActivityAppNavigationBinding
 import com.example.moviecatalog.presentation.view.MainActivity.Companion.addKeybordListener
 import com.example.moviecatalog.presentation.view.navigationBarFragments.FeedScreen
+import com.example.moviecatalog.presentation.view.navigationBarFragments.MovieScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
@@ -20,17 +21,23 @@ class AppNavigationActivity:AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_app_navigation)
         binding = ActivityAppNavigationBinding.inflate(layoutInflater)
+
         val rootView = binding.root
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.itemIconTintList = null
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.feed -> {
-                    println("1")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, FeedScreen())
+                        .commit()
                     true
                 }
                 R.id.films -> {
-                    println("2")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, MovieScreen())
+                        .commit()
                     true
                 }
                 R.id.library -> {

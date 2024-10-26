@@ -1,4 +1,4 @@
-package com.example.moviecatalog.domain.mappers
+package com.example.moviecatalog.data.data.mappers
 
 import com.example.moviecatalog.data.data.remote.entities.PageInfoModelDTO
 import com.example.moviecatalog.domain.entity.PageInfoModel

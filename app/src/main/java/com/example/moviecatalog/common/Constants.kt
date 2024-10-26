@@ -21,6 +21,9 @@ object Constants{
     const val MOVIE_COUNTRY = "Страна Фильма"
 
 
+    const val MIN_SWIPE_DISTANCE = -250
+    const val MOVIE_STORY_DURATION = 5000L
+
     const val MALE = 0
     const val FEMALE = 1
 }

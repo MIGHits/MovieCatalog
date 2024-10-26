@@ -52,7 +52,7 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         binding?.register?.setOnClickListener{
            lifecycleScope.launch {
                viewModel.registerUser(requireContext()).join()
-               subscribeRegistrationError()
+               applyRegistrationError()
            }
         }
     }
@@ -73,7 +73,7 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         }
     }
 
-    private fun subscribeRegistrationError(){
+    private fun applyRegistrationError(){
         binding?.apply {
             registrationError.visibility =
                 registrationUIState.registrationError

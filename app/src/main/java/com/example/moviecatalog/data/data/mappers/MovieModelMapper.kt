@@ -1,11 +1,10 @@
-package com.example.moviecatalog.domain.mappers
+package com.example.moviecatalog.data.data.mappers
 
-import com.example.moviecatalog.data.data.remote.entities.MovieDetailsModelDTO
 import com.example.moviecatalog.data.data.remote.entities.MovieElementModelDTO
 import com.example.moviecatalog.domain.entity.MovieElementModel
 
-class MovieModelMapper(private val genreMapper:GenreMapper){
-    fun map(movieDTO:MovieElementModelDTO):MovieElementModel{
+class MovieModelMapper(private val genreMapper: GenreMapper){
+    private fun map(movieDTO:MovieElementModelDTO):MovieElementModel{
         return MovieElementModel(
             id = movieDTO.id,
             name = movieDTO.name,

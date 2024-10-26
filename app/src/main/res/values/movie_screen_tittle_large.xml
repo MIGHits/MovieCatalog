@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="movie_tittle_large">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/manrope_bold</item>
+        <item name="android:fontWeight">700</item>
+        <item name="android:lineHeight">50.4sp</item>
+    </style>
+</resources>
