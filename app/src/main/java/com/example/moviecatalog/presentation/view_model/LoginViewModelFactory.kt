@@ -11,13 +11,16 @@ import com.example.moviecatalog.domain.usecase.LoginUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateLoginUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordUseCase
 
-class LoginViewModelFactory:ViewModelProvider.Factory {
+class LoginViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
-       return LoginViewModel(
-           ValidateLoginUseCase(),
-           ValidatePasswordUseCase(),
-           LoginUseCase(AuthRepositoryImpl(
-               PrefsTokenStorage(),AuthServiceProvider()))
-       ) as T
+        return LoginViewModel(
+            ValidateLoginUseCase(),
+            ValidatePasswordUseCase(),
+            LoginUseCase(
+                AuthRepositoryImpl(
+                    PrefsTokenStorage, AuthServiceProvider()
+                )
+            )
+        ) as T
     }
 }

@@ -5,7 +5,6 @@ import com.example.moviecatalog.domain.entity.LoginBody
 import com.example.moviecatalog.domain.entity.UserRegisterModel
 
 
-
 interface AuthRepository {
     suspend fun register(user: UserRegisterModel)
 

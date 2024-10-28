@@ -5,13 +5,13 @@ import com.example.moviecatalog.common.Constants.PASSWORD_ERROR
 import com.example.moviecatalog.presentation.state.ValidationStatus
 
 class ValidatePasswordUseCase {
-    operator fun invoke(password:String):ValidationStatus{
-        return if(password.isNotEmpty() && password.length>=6){
+    operator fun invoke(password: String): ValidationStatus {
+        return if (password.isNotEmpty() && password.length >= 6) {
             ValidationStatus(
                 status = true,
                 errorState = View.GONE
             )
-        }else{
+        } else {
             ValidationStatus(
                 status = false,
                 errorMessage = PASSWORD_ERROR,

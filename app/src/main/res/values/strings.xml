@@ -27,4 +27,7 @@
     <string name="genres_1">Жанр1</string>
     <string name="second_genre">Жанр2</string>
     <string name="watch_button_text">Смотреть</string>
+    <string name="RandomMovie">Случайный фильм</string>
+    <string name="likedMovies">Мне нравится</string>
+    <string name="allMovies">Все</string>
 </resources>

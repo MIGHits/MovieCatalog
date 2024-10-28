@@ -34,103 +34,119 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCase,
-                            private val validateEmailUseCase:ValidateEmailUseCase,
-                            private val validatePasswordUseCase:ValidatePasswordUseCase,
-                            private val validatePasswordConfirmUseCase:ValidatePasswordConfirmUseCase,
-                            private val validateBirthDateUseCase:ValidateBirthDateUseCase,
-                            private val validateNameField:ValidateNameField,
-                            private val dateConverter: DateConverter,
-                            private val registerUseCase: RegisterUseCase
-    ):ViewModel() {
+class RegistrationViewModel(
+    private val validateLoginUseCase: ValidateLoginUseCase,
+    private val validateEmailUseCase: ValidateEmailUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val validatePasswordConfirmUseCase: ValidatePasswordConfirmUseCase,
+    private val validateBirthDateUseCase: ValidateBirthDateUseCase,
+    private val validateNameField: ValidateNameField,
+    private val dateConverter: DateConverter,
+    private val registerUseCase: RegisterUseCase
+) : ViewModel() {
 
     private val _registrationState = MutableStateFlow(RegistrationState.INITIAL)
-    val registrationState:StateFlow<RegistrationState> get() = _registrationState
+    val registrationState: StateFlow<RegistrationState> get() = _registrationState
 
     private val _registration = MutableStateFlow(
-        RegistrationCredentials())
-    val registration:StateFlow<RegistrationCredentials> get() =  _registration
+        RegistrationCredentials()
+    )
+    val registration: StateFlow<RegistrationCredentials> get() = _registration
 
     private val _registrationUI = MutableStateFlow(RegistrationUIState())
-    val registrationUI:StateFlow<RegistrationUIState> get() = _registrationUI
+    val registrationUI: StateFlow<RegistrationUIState> get() = _registrationUI
 
     private val _registrationValid = MutableStateFlow(ButtonState())
-    val registrationValid:StateFlow<ButtonState>get() = _registrationValid
+    val registrationValid: StateFlow<ButtonState> get() = _registrationValid
 
-    fun changeUIState(element:String){
-        when(element){
-            "login"->if(_registration.value.userName == INITIAL_FIELD_STATE){
+    fun changeUIState(element: String) {
+        when (element) {
+            "login" -> if (_registration.value.userName == INITIAL_FIELD_STATE) {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(loginIconVisibility = View.INVISIBLE)
-            }else{
+            } else {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(loginIconVisibility = View.VISIBLE)
             }
-            "name"->if(_registration.value.name == INITIAL_FIELD_STATE){
+
+            "name" -> if (_registration.value.name == INITIAL_FIELD_STATE) {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(nameIconVisibility = View.INVISIBLE)
-            }else{
+            } else {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(nameIconVisibility = View.VISIBLE)
             }
-            "email"->if(_registration.value.email == INITIAL_FIELD_STATE){
+
+            "email" -> if (_registration.value.email == INITIAL_FIELD_STATE) {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(emailIconVisibility = View.INVISIBLE)
-            }else{
+            } else {
                 _registrationUI.value =
                     _registrationUI
                         .value
                         .copy(emailIconVisibility = View.VISIBLE)
             }
-            "password"->if(_registrationUI.value.passwordCurrentInputType ==
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
+
+            "password" -> if (_registrationUI.value.passwordCurrentInputType ==
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            ) {
                 _registrationUI.value =
                     _registrationUI
                         .value
-                        .copy(passwordCurrentInputType =
-                    InputType.TYPE_CLASS_TEXT or
-                    InputType.TYPE_TEXT_VARIATION_PASSWORD,
-                            passwordCurrentIcon = R.drawable.eye_on)
-            }else{
+                        .copy(
+                            passwordCurrentInputType =
+                            InputType.TYPE_CLASS_TEXT or
+                                    InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                            passwordCurrentIcon = R.drawable.eye_on
+                        )
+            } else {
                 _registrationUI.value =
                     _registrationUI
                         .value
-                        .copy(passwordCurrentInputType =
-                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-                    passwordCurrentIcon = R.drawable.eye_off)
+                        .copy(
+                            passwordCurrentInputType =
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                            passwordCurrentIcon = R.drawable.eye_off
+                        )
             }
-            "passwordConfirm"->if(_registrationUI.value.passwordConfirmCurrentInputType ==
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
+
+            "passwordConfirm" -> if (_registrationUI.value.passwordConfirmCurrentInputType ==
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            ) {
                 _registrationUI.value =
                     _registrationUI
                         .value
-                        .copy(passwordConfirmCurrentInputType =
-                        InputType.TYPE_CLASS_TEXT or
-                                InputType.TYPE_TEXT_VARIATION_PASSWORD,
-                            passwordConfirmCurrentIcon = R.drawable.eye_on)
-            }else{
+                        .copy(
+                            passwordConfirmCurrentInputType =
+                            InputType.TYPE_CLASS_TEXT or
+                                    InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                            passwordConfirmCurrentIcon = R.drawable.eye_on
+                        )
+            } else {
                 _registrationUI.value =
                     _registrationUI
                         .value
-                        .copy(passwordConfirmCurrentInputType =
-                        InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-                            passwordConfirmCurrentIcon = R.drawable.eye_off)
+                        .copy(
+                            passwordConfirmCurrentInputType =
+                            InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                            passwordConfirmCurrentIcon = R.drawable.eye_off
+                        )
             }
         }
     }
 
     fun createUserAccount(): UserRegisterModel {
-       return UserRegisterModel(
+        return UserRegisterModel(
             userName = _registration.value.userName,
             name = _registration.value.name,
             password = _registration.value.password,
@@ -141,77 +157,90 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
     }
 
     fun isValid(): ButtonState {
-       val buttonState = validateLoginUseCase(_registration.value.userName).status &&
-        validateEmailUseCase(_registration.value.email).status &&
-        validateNameField(_registration.value.name).status &&
-        validateBirthDateUseCase(_registration.value.birthDate).status &&
-        validatePasswordUseCase(_registration.value.password).status &&
-        validatePasswordConfirmUseCase(_registration.value.passwordConfirm,
-            _registration.value.password).status
+        val buttonState = validateLoginUseCase(_registration.value.userName).status &&
+                validateEmailUseCase(_registration.value.email).status &&
+                validateNameField(_registration.value.name).status &&
+                validateBirthDateUseCase(_registration.value.birthDate).status &&
+                validatePasswordUseCase(_registration.value.password).status &&
+                validatePasswordConfirmUseCase(
+                    _registration.value.passwordConfirm,
+                    _registration.value.password
+                ).status
 
-        val buttonStyle  = if (buttonState) R.drawable.primary_button_shape else
+        val buttonStyle = if (buttonState) R.drawable.primary_button_shape else
             R.drawable.secondary_button_shape
 
-        val buttonText =  if (buttonState) R.style.buttonText else
+        val buttonText = if (buttonState) R.style.buttonText else
             R.style.buttonTextNotActive
 
-        return ButtonState(buttonState,buttonStyle,buttonText)
+        return ButtonState(buttonState, buttonStyle, buttonText)
     }
 
-    fun setLogin(login:String){
+    fun setLogin(login: String) {
         val validationResult = validateLoginUseCase(login)
-        _registration.value = _registration.value.copy(userName = login,
+        _registration.value = _registration.value.copy(
+            userName = login,
             loginError = validationResult.errorMessage,
-            loginErrorView = validationResult.errorState)
+            loginErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setName(name:String){
+    fun setName(name: String) {
         val validationResult = validateNameField(name)
-        _registration.value = _registration.value.copy(name = name,
+        _registration.value = _registration.value.copy(
+            name = name,
             nameError = validationResult.errorMessage,
-            nameErrorView = validationResult.errorState)
+            nameErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setEmail(email:String){
+    fun setEmail(email: String) {
         val validationResult = validateEmailUseCase(email)
-        _registration.value = _registration.value.copy(email = email,
+        _registration.value = _registration.value.copy(
+            email = email,
             emailError = validationResult.errorMessage,
-            emailErrorView = validationResult.errorState)
+            emailErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setPassword(password:String){
-        val validationResult  = validatePasswordUseCase(password)
-        _registration.value = _registration.value.copy(password = password,
+    fun setPassword(password: String) {
+        val validationResult = validatePasswordUseCase(password)
+        _registration.value = _registration.value.copy(
+            password = password,
             passwordError = validationResult.errorMessage,
-            passwordErrorView = validationResult.errorState)
+            passwordErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setPasswordConfirm(passwordConfirm: String,password: String){
-        val validationResult = validatePasswordConfirmUseCase(passwordConfirm,password)
-        _registration.value = _registration.value.copy(passwordConfirm = passwordConfirm,
+    fun setPasswordConfirm(passwordConfirm: String, password: String) {
+        val validationResult = validatePasswordConfirmUseCase(passwordConfirm, password)
+        _registration.value = _registration.value.copy(
+            passwordConfirm = passwordConfirm,
             passwordConfirmError = validationResult.errorMessage,
-            passwordConfirmErrorView = validationResult.errorState)
+            passwordConfirmErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setBirthdate(birthDate:Calendar){
-        val  validationResult = validateBirthDateUseCase(birthDate.toString())
+    fun setBirthdate(birthDate: Calendar) {
+        val validationResult = validateBirthDateUseCase(birthDate.toString())
         _registration.value = _registration.value.copy(
             birthDate = dateConverter.convertSelectedToUI(birthDate),
             birthDateError = validationResult.errorMessage,
-            birthDayErrorView = validationResult.errorState)
+            birthDayErrorView = validationResult.errorState
+        )
         _registrationValid.value = isValid()
     }
 
-    fun setGender(value:Int){
+    fun setGender(value: Int) {
         _registration.value = _registration.value.copy(gender = value)
     }
 
-    private fun changeErrorMessageVisibility(message:String){
+    private fun changeErrorMessageVisibility(message: String) {
         _registration.value =
             _registration.value.copy(exceptionError = message)
         _registrationUI.value =
@@ -219,26 +248,27 @@ class RegistrationViewModel(private val validateLoginUseCase:ValidateLoginUseCas
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        when(exception){
-            is HttpException->{
-                when(exception.code()){
-                    400-> changeErrorMessageVisibility(UNIQUE_LOGIN_ERROR)
+        when (exception) {
+            is HttpException -> {
+                when (exception.code()) {
+                    400 -> changeErrorMessageVisibility(UNIQUE_LOGIN_ERROR)
                 }
             }
-            else-> changeErrorMessageVisibility(EXCEPTION_ERROR)
+
+            else -> changeErrorMessageVisibility(EXCEPTION_ERROR)
         }
     }
 
-    private fun successfulRegister(context: Context){
+    private fun successfulRegister(context: Context) {
         val intent = Intent(context, AppNavigationActivity::class.java)
-        startActivity(context,intent,null)
+        startActivity(context, intent, null)
     }
 
     fun registerUser(context: Context) = viewModelScope.launch(exceptionHandler) {
         val registrationBody = createUserAccount()
         registerUseCase(registrationBody)
         _registrationUI.value =
-        _registrationUI.value.copy(registrationError = View.GONE)
+            _registrationUI.value.copy(registrationError = View.GONE)
         successfulRegister(context)
     }
 }

@@ -24,16 +24,16 @@ import com.example.moviecatalog.presentation.view_model.RegistrationViewModel
 import com.example.moviecatalog.presentation.view_model.RegistrationViewModelFactory
 import kotlinx.coroutines.launch
 
-class SignUpScreen:Fragment(R.layout.sign_up_screen) {
-    private var binding:SignUpScreenBinding? = null
-    private lateinit var viewModel:RegistrationViewModel
-    private lateinit var registrationCredentials:RegistrationCredentials
+class SignUpScreen : Fragment(R.layout.sign_up_screen) {
+    private var binding: SignUpScreenBinding? = null
+    private lateinit var viewModel: RegistrationViewModel
+    private lateinit var registrationCredentials: RegistrationCredentials
     private lateinit var registrationUIState: RegistrationUIState
     private val calendar = Calendar.getInstance()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-         viewModel = ViewModelProvider(this,RegistrationViewModelFactory())
+        viewModel = ViewModelProvider(this, RegistrationViewModelFactory())
             .get(RegistrationViewModel::class.java)
     }
 
@@ -47,13 +47,14 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         setValidationFields(viewModel)
 
         binding?.constraintLayout2?.clipToOutline = true
-        binding?.backButton?.setOnClickListener{
-            parentFragment?.parentFragmentManager?.popBackStack()}
-        binding?.register?.setOnClickListener{
-           lifecycleScope.launch {
-               viewModel.registerUser(requireContext()).join()
-               applyRegistrationError()
-           }
+        binding?.backButton?.setOnClickListener {
+            parentFragment?.parentFragmentManager?.popBackStack()
+        }
+        binding?.register?.setOnClickListener {
+            lifecycleScope.launch {
+                viewModel.registerUser(requireContext()).join()
+                applyRegistrationError()
+            }
         }
     }
 
@@ -62,18 +63,20 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         binding = null
     }
 
-    private fun isRegistrationValid(){
+    private fun isRegistrationValid() {
         binding?.apply {
             register.isEnabled =
                 viewModel.registrationValid.value.buttonState
             register.setBackgroundResource(
-                viewModel.registrationValid.value.buttonStyle)
+                viewModel.registrationValid.value.buttonStyle
+            )
             register.setTextAppearance(
-                viewModel.registrationValid.value.buttonTextStyle)
+                viewModel.registrationValid.value.buttonTextStyle
+            )
         }
     }
 
-    private fun applyRegistrationError(){
+    private fun applyRegistrationError() {
         binding?.apply {
             registrationError.visibility =
                 registrationUIState.registrationError
@@ -82,88 +85,99 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
         }
     }
 
-    private fun setFieldsListeners(){
+    private fun setFieldsListeners() {
         binding?.apply {
 
-            deleteLogin.setOnClickListener{
+            deleteLogin.setOnClickListener {
                 login.setText(INITIAL_FIELD_STATE)
                 viewModel.setLogin(login.text.toString())
                 viewModel.changeUIState("login")
-                deleteLogin.visibility = registrationUIState.loginIconVisibility}
+                deleteLogin.visibility = registrationUIState.loginIconVisibility
+            }
 
-            deleteName.setOnClickListener{
+            deleteName.setOnClickListener {
                 name.setText(INITIAL_FIELD_STATE)
                 viewModel.setName(INITIAL_FIELD_STATE)
                 viewModel.changeUIState("name")
-                deleteName.visibility = registrationUIState.nameIconVisibility}
+                deleteName.visibility = registrationUIState.nameIconVisibility
+            }
 
-            deleteEmail.setOnClickListener{
+            deleteEmail.setOnClickListener {
                 email.setText(INITIAL_FIELD_STATE)
                 viewModel.setEmail(INITIAL_FIELD_STATE)
                 viewModel.changeUIState("email")
-                deleteEmail.visibility = registrationUIState.emailIconVisibility}
+                deleteEmail.visibility = registrationUIState.emailIconVisibility
+            }
 
-            passwordVisibility.setOnClickListener{
+            passwordVisibility.setOnClickListener {
                 viewModel.changeUIState("password")
                 password.inputType = registrationUIState.passwordCurrentInputType
                 passwordVisibility.setImageResource(registrationUIState.passwordCurrentIcon)
             }
-            passwordConfirmVisibility.setOnClickListener{
+            passwordConfirmVisibility.setOnClickListener {
                 viewModel.changeUIState("passwordConfirm")
                 passwordConfirm.inputType = registrationUIState.passwordConfirmCurrentInputType
-                passwordConfirmVisibility.setImageResource(registrationUIState.
-                passwordConfirmCurrentIcon)
+                passwordConfirmVisibility.setImageResource(
+                    registrationUIState.passwordConfirmCurrentIcon
+                )
             }
-            male.setOnClickListener { if (male.isPressed)
-                male.setBackgroundResource(R.drawable.gender_button_primary)
+            male.setOnClickListener {
+                if (male.isPressed)
+                    male.setBackgroundResource(R.drawable.gender_button_primary)
                 female.setBackgroundResource(R.color.DarkFaded)
                 viewModel.setGender(MALE)
             }
-            female.setOnClickListener { if (female.isPressed)
-                female.setBackgroundResource(R.drawable.gender_button_primary)
+            female.setOnClickListener {
+                if (female.isPressed)
+                    female.setBackgroundResource(R.drawable.gender_button_primary)
                 male.setBackgroundResource(R.color.DarkFaded)
                 viewModel.setGender(FEMALE)
             }
-            changeDate.setOnClickListener{pickDate()}
+            changeDate.setOnClickListener { pickDate() }
         }
     }
 
-    private  fun pickDate(){
+    private fun pickDate() {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         val minDate = Calendar.getInstance()
-        minDate.set(1940,0,1)
+        minDate.set(1940, 0, 1)
         val maxDate = Calendar.getInstance()
-        maxDate.set(year,month,day)
+        maxDate.set(year, month, day)
 
-       val datePicker = DatePickerDialog(requireContext(),{
-            _:DatePicker,selectedYear:Int,selectedMonth:Int,selectedDay:Int ->
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(selectedYear,selectedMonth,selectedDay)
-            viewModel.setBirthdate(selectedDate)
-            binding?.changeDate?.setImageResource(R.drawable.calender_on)
-            binding?.birthDate?.text = registrationCredentials.birthDate
-            isRegistrationValid()
-        },year,month,day)
+        val datePicker = DatePickerDialog(
+            requireContext(),
+            { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth, selectedDay)
+                viewModel.setBirthdate(selectedDate)
+                binding?.changeDate?.setImageResource(R.drawable.calender_on)
+                binding?.birthDate?.text = registrationCredentials.birthDate
+                isRegistrationValid()
+            },
+            year,
+            month,
+            day
+        )
 
         datePicker.datePicker.maxDate = maxDate.timeInMillis
         datePicker.datePicker.minDate = minDate.timeInMillis
         datePicker.show()
     }
 
-   private fun subscribeRegistration(viewModel: RegistrationViewModel){
-       this.lifecycleScope.launch {
-           viewModel.registration.collect { registrationField:RegistrationCredentials ->
-               registrationCredentials = registrationField
-           }
-       }
-   }
-
-    private fun subscribeUIState(viewModel: RegistrationViewModel){
+    private fun subscribeRegistration(viewModel: RegistrationViewModel) {
         this.lifecycleScope.launch {
-            viewModel.registrationUI.collect{currentstate:RegistrationUIState ->
+            viewModel.registration.collect { registrationField: RegistrationCredentials ->
+                registrationCredentials = registrationField
+            }
+        }
+    }
+
+    private fun subscribeUIState(viewModel: RegistrationViewModel) {
+        this.lifecycleScope.launch {
+            viewModel.registrationUI.collect { currentstate: RegistrationUIState ->
                 registrationUIState = currentstate
             }
         }
@@ -223,12 +237,15 @@ class SignUpScreen:Fragment(R.layout.sign_up_screen) {
     }
 
     private fun setTextChangeListener(editText: EditText, action: (String) -> Unit) {
-        editText.addTextChangedListener(object :TextWatcher{
+        editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int, after: Int) {}
+                s: CharSequence?, start: Int, count: Int, after: Int
+            ) {
+            }
 
             override fun onTextChanged(
-                s: CharSequence?, start: Int, before: Int, count: Int) {
+                s: CharSequence?, start: Int, before: Int, count: Int
+            ) {
                 action(editText.text.toString())
                 isRegistrationValid()
             }

@@ -12,19 +12,20 @@ import com.example.moviecatalog.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(
     private val tokenStorage: TokenStorage,
-    private val authApi:AuthService,
+    private val authApi: AuthService,
     private val userMapper: UserMapper = UserMapper(),
-    private val loginMapper:LoginCredentialsMapper =
-        LoginCredentialsMapper()): AuthRepository {
+    private val loginMapper: LoginCredentialsMapper =
+        LoginCredentialsMapper()
+) : AuthRepository {
 
-    override suspend fun register(user: UserRegisterModel){
-       val token =  authApi.register(userMapper.map(user))
-        tokenStorage.saveToken(token.token)
+    override suspend fun register(user: UserRegisterModel) {
+        val token = authApi.register(userMapper.map(user))
+        tokenStorage.saveToken(token)
     }
 
-    override suspend fun login(loginCredentials:LoginBody){
+    override suspend fun login(loginCredentials: LoginBody) {
         val token = authApi.login(loginMapper.map(loginCredentials))
-        tokenStorage.saveToken(token.token)
+        tokenStorage.saveToken(token)
     }
 
     override suspend fun logout() {

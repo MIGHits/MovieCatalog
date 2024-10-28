@@ -13,4 +13,8 @@
     <color name="GrayFaded">#999999</color>
     <color name="TextGray">#CCCCCC</color>
     <color name="Accent">#EF3A01</color>
+    <color name="gray_scale">#CCCCCC</color>
+    <color name="progress_max_active">@color/Accent</color>
+    <color name="progress_primary">@color/Accent</color>
+    <color name="progress_secondary">@color/TextGray</color>
 </resources>

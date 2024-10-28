@@ -46,6 +46,7 @@ dependencies {
     implementation (libs.storiesprogressview.v30){
         exclude ("com.android.support")
     }
+    implementation (libs.veeyaarvr.supergradienttextview)
     implementation(libs.kotlin.stdlib.jdk7)
     implementation (libs.squareup.picasso)
     implementation (libs.converter.gson)
@@ -61,6 +62,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.ui.graphics.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

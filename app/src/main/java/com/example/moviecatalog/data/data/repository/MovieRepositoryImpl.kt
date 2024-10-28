@@ -9,9 +9,10 @@ import com.example.moviecatalog.domain.repository.MovieRepository
 class MovieRepositoryImpl(
     private val movieApi: MovieService,
     private val movieMapper: MovieModelMapper,
-    private val pageMapper: PageInfoMapper):MovieRepository{
+    private val pageMapper: PageInfoMapper
+) : MovieRepository {
 
-    override suspend fun getMoviePage(page: Int):MoviesPagedListModel{
+    override suspend fun getMoviePage(page: Int): MoviesPagedListModel {
         val dtoModel = movieApi.getMoviePage(page)
         return MoviesPagedListModel(
             movies = dtoModel.movies?.let { movieMapper.map(it) },
@@ -19,7 +20,7 @@ class MovieRepositoryImpl(
         )
     }
 
-    override suspend fun getMovieDetails(id: String){
+    override suspend fun getMovieDetails(id: String) {
 
     }
 

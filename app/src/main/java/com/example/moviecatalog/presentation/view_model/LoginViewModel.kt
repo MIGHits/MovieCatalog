@@ -27,16 +27,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class LoginViewModel(private val validateLoginUseCase: ValidateLoginUseCase,
-                     private val validatePasswordUseCase: ValidatePasswordUseCase,
-                     private val loginUseCase: LoginUseCase
-):ViewModel(){
+class LoginViewModel(
+    private val validateLoginUseCase: ValidateLoginUseCase,
+    private val validatePasswordUseCase: ValidatePasswordUseCase,
+    private val loginUseCase: LoginUseCase
+) : ViewModel() {
 
 
     private val _loginState = MutableStateFlow(LoginState.INITIAL)
-    val loginState:StateFlow<LoginState>get() = _loginState
+    val loginState: StateFlow<LoginState> get() = _loginState
 
-    private  val _login = MutableStateFlow(
+    private val _login = MutableStateFlow(
         LoginCredentials(
             login = INITIAL_FIELD_STATE,
             loginError = null,
@@ -44,50 +45,59 @@ class LoginViewModel(private val validateLoginUseCase: ValidateLoginUseCase,
             passwordError = null
         )
     )
-    val login:StateFlow<LoginCredentials> get() = _login
+    val login: StateFlow<LoginCredentials> get() = _login
 
     private val _loginUIState = MutableStateFlow(LoginUiState())
-    val loginUIState:StateFlow<LoginUiState> get() = _loginUIState
+    val loginUIState: StateFlow<LoginUiState> get() = _loginUIState
 
     private val _loginValid = MutableStateFlow(ButtonState())
-    val loginValid:StateFlow<ButtonState>get() = _loginValid
+    val loginValid: StateFlow<ButtonState> get() = _loginValid
 
-    fun changeUIState(element:String){
-        when(element){
-            "login"->if (login.value.login == INITIAL_FIELD_STATE){
+    fun changeUIState(element: String) {
+        when (element) {
+            "login" -> if (login.value.login == INITIAL_FIELD_STATE) {
                 _loginUIState.value =
                     _loginUIState.value.copy(loginIconVisibility = View.INVISIBLE)
-            }else{
+            } else {
                 _loginUIState.value =
                     _loginUIState.value.copy(loginIconVisibility = View.VISIBLE)
             }
 
-            "password"->if(_loginUIState.value.passwordCurrentInputType ==
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
-                _loginUIState.value = _loginUIState.value.copy(passwordCurrentInputType =
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
-                passwordCurrentIcon = R.drawable.eye_on)
-            }else{
-                _loginUIState.value = _loginUIState.value.copy(passwordCurrentInputType =
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
-                passwordCurrentIcon = R.drawable.eye_off)
+            "password" -> if (_loginUIState.value.passwordCurrentInputType ==
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            ) {
+                _loginUIState.value = _loginUIState.value.copy(
+                    passwordCurrentInputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
+                    passwordCurrentIcon = R.drawable.eye_on
+                )
+            } else {
+                _loginUIState.value = _loginUIState.value.copy(
+                    passwordCurrentInputType =
+                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD,
+                    passwordCurrentIcon = R.drawable.eye_off
+                )
             }
         }
     }
 
-    fun setLogin(login:String){
+    fun setLogin(login: String) {
         val validationResult = validateLoginUseCase(login)
-        _login.value = _login.value.copy(login = login,
+        _login.value = _login.value.copy(
+            login = login,
             loginError = validationResult.errorMessage,
-            loginErrorView = validationResult.errorState)
+            loginErrorView = validationResult.errorState
+        )
         _loginValid.value = isValid()
     }
 
-    fun setPassword(password:String){
+    fun setPassword(password: String) {
         val validationResult = validatePasswordUseCase(password)
-        _login.value = _login.value.copy(password = password,
+        _login.value = _login.value.copy(
+            password = password,
             passwordError = validationResult.errorMessage,
-            passwordErrorView = validationResult.errorState)
+            passwordErrorView = validationResult.errorState
+        )
         _loginValid.value = isValid()
     }
 
@@ -95,23 +105,23 @@ class LoginViewModel(private val validateLoginUseCase: ValidateLoginUseCase,
         val buttonState = validateLoginUseCase(_login.value.login).status &&
                 validatePasswordUseCase(_login.value.password).status
 
-        val buttonStyle  = if (buttonState) R.drawable.primary_button_shape else
+        val buttonStyle = if (buttonState) R.drawable.primary_button_shape else
             R.drawable.secondary_button_shape
 
-        val buttonText =  if (buttonState) R.style.buttonText else
+        val buttonText = if (buttonState) R.style.buttonText else
             R.style.buttonTextNotActive
 
-        return ButtonState(buttonState,buttonStyle,buttonText)
+        return ButtonState(buttonState, buttonStyle, buttonText)
     }
 
-    private fun createUserLogin():LoginBody{
+    private fun createUserLogin(): LoginBody {
         return LoginBody(
             username = _login.value.login,
             password = _login.value.password
         )
     }
 
-    private fun changeErrorMessageVisibility(message:String){
+    private fun changeErrorMessageVisibility(message: String) {
         _login.value =
             _login.value.copy(exceptionError = message)
         _loginUIState.value =
@@ -119,28 +129,29 @@ class LoginViewModel(private val validateLoginUseCase: ValidateLoginUseCase,
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-        when(exception){
-            is HttpException ->{
-                when(exception.code()){
-                    400-> changeErrorMessageVisibility(LOGIN_EXCEPTION)
+        when (exception) {
+            is HttpException -> {
+                when (exception.code()) {
+                    400 -> changeErrorMessageVisibility(LOGIN_EXCEPTION)
                 }
             }
-            else-> changeErrorMessageVisibility(EXCEPTION_ERROR)
+
+            else -> changeErrorMessageVisibility(EXCEPTION_ERROR)
         }
     }
 
-    private fun successfulLogin(context: Context){
-        val intent = Intent(context,AppNavigationActivity::class.java)
-        startActivity(context,intent,null)
+    private fun successfulLogin(context: Context) {
+        val intent = Intent(context, AppNavigationActivity::class.java)
+        startActivity(context, intent, null)
     }
 
     fun loginUser(context: Context) =
-        viewModelScope.launch(Dispatchers.IO + exceptionHandler){
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val user = createUserLogin()
             loginUseCase(user)
             _loginUIState.value =
                 _loginUIState.value.copy(exceptionErrorView = View.GONE)
             successfulLogin(context)
 
-    }
+        }
 }

@@ -2,7 +2,7 @@ package com.example.moviecatalog
 
 import android.app.Application
 
-class MovieCatalogApplication:Application(){
+class MovieCatalogApplication : Application() {
     companion object {
         lateinit var instance: MovieCatalogApplication
             private set

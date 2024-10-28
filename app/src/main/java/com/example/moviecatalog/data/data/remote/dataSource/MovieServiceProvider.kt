@@ -1,5 +1,6 @@
 package com.example.moviecatalog.data.data.remote.dataSource
 
+import android.util.Log
 import com.example.moviecatalog.data.data.remote.dataSource.RetrofitClientProvide.retrofitProvider
 import com.example.moviecatalog.data.data.remote.entities.MovieDetailsModelDTO
 import com.example.moviecatalog.data.data.remote.entities.MoviesPagedListModelDTO

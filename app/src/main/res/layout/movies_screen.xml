@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/screenBackgroundDark"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -20,20 +21,76 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movie_horizontal_recycler_top"
                 android:layout_width="match_parent"
+                android:background="@drawable/movie_carousel_shape"
+                android:clipToOutline="true"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <jp.shts.android.storiesprogressview.StoriesProgressView
                 android:id="@+id/progressBar"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="5dp"
                 android:layout_marginTop="60dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/movie_horizontal_recycler_top" />
+            <Button
+                android:id="@+id/randomMovie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/primary_button_shape"
+                android:drawableStart="@drawable/game_die"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/RandomMovie"
+                android:textAppearance="@style/randomMovieStyle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_horizontal_recycler_top"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="292dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/randomMovie">
+
+                <com.veeyaar.supergradienttextview.GradientTextView
+                    android:id="@+id/likedMovies"
+                    android:textAppearance="@style/likedMovies"
+                    android:text="@string/likedMovies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    app:startColor="@color/primaryButtonDefault1"
+                    app:endColor="@color/primaryButtonDefault2"
+                    app:isVertical="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:textAppearance="@style/randomMovieStyle"
+                    android:textColor="@color/TextGray"
+                    android:text="@string/allMovies"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/favoriteMoviesRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

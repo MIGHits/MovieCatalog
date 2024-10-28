@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase):ViewModel(){
+class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase) : ViewModel() {
     private val _movieModel = MutableStateFlow<MovieElementModelUI>(MovieElementModelUI())
-    val movieModel:StateFlow<MovieElementModelUI> get() = _movieModel
+    val movieModel: StateFlow<MovieElementModelUI> get() = _movieModel
 
-    private fun randomMovie(lowerBound:Int, upperBound:Int):Int{
-        return Random.nextInt(lowerBound,upperBound)
+    private fun randomMovie(lowerBound: Int, upperBound: Int): Int {
+        return Random.nextInt(lowerBound, upperBound)
     }
 
     fun getMovie() =
         viewModelScope.launch {
-            val moviePage = getMoviePageUseCase(randomMovie(1,6))
-            val radomMovieIndex = randomMovie(0,moviePage.pageInfo.pageSize)
+            val moviePage = getMoviePageUseCase(randomMovie(1, 6))
+            val radomMovieIndex = randomMovie(0, moviePage.pageInfo.pageSize)
             val randomMovie = moviePage.movies?.get(radomMovieIndex)
             _movieModel.value = _movieModel.value.copy(
                 name = randomMovie?.name,

@@ -9,14 +9,16 @@ import com.example.moviecatalog.data.data.mappers.MovieModelMapper
 import com.example.moviecatalog.data.data.mappers.PageInfoMapper
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
 
-class FeedViewModelFactory: ViewModelProvider.Factory {
+class FeedViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return FeedViewModel(
             GetMoviePageUseCase(
-            MovieRepositoryImpl(
-            MovieServiceProvider(),
-            MovieModelMapper(GenreMapper()),
-            PageInfoMapper()
-            ))) as T
+                MovieRepositoryImpl(
+                    MovieServiceProvider(),
+                    MovieModelMapper(GenreMapper()),
+                    PageInfoMapper()
+                )
+            )
+        ) as T
     }
 }

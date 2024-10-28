@@ -5,12 +5,12 @@ import com.example.moviecatalog.presentation.state.ValidationStatus
 
 class ValidateBirthDateUseCase {
     operator fun invoke(birthDate: String): ValidationStatus {
-        return if (birthDate.isNotEmpty()){
+        return if (birthDate.isNotEmpty()) {
             ValidationStatus(
                 status = true,
-                errorState =  View.GONE
+                errorState = View.GONE
             )
-        }else{
+        } else {
             ValidationStatus(
                 status = false,
                 errorMessage = "",

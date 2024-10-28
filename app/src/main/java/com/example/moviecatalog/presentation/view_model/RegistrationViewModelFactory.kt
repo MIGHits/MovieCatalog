@@ -15,7 +15,7 @@ import com.example.moviecatalog.domain.usecase.Validation.ValidateNameField
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordConfirmUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordUseCase
 
-class RegistrationViewModelFactory:ViewModelProvider.Factory{
+class RegistrationViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         return RegistrationViewModel(
             ValidateLoginUseCase(),
@@ -25,8 +25,12 @@ class RegistrationViewModelFactory:ViewModelProvider.Factory{
             ValidateBirthDateUseCase(),
             ValidateNameField(),
             DateConverter(),
-            RegisterUseCase(AuthRepositoryImpl(PrefsTokenStorage(),
-                AuthServiceProvider()))
+            RegisterUseCase(
+                AuthRepositoryImpl(
+                    PrefsTokenStorage,
+                    AuthServiceProvider()
+                )
+            )
         ) as T
     }
 }

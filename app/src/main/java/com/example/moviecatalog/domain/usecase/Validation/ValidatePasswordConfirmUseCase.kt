@@ -5,13 +5,13 @@ import com.example.moviecatalog.common.Constants.PASSWORD_CONFIRM_ERROR
 import com.example.moviecatalog.presentation.state.ValidationStatus
 
 class ValidatePasswordConfirmUseCase {
-    operator fun invoke(passwordConfirm:String,password:String):ValidationStatus{
-        return if(passwordConfirm == password){
+    operator fun invoke(passwordConfirm: String, password: String): ValidationStatus {
+        return if (passwordConfirm == password) {
             ValidationStatus(
                 status = true,
                 errorState = View.GONE
             )
-        }else{
+        } else {
             ValidationStatus(
                 status = false,
                 errorMessage = PASSWORD_CONFIRM_ERROR,

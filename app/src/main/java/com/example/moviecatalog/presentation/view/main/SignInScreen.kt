@@ -21,16 +21,17 @@ import com.example.moviecatalog.presentation.view_model.LoginViewModel
 import com.example.moviecatalog.presentation.view_model.LoginViewModelFactory
 import kotlinx.coroutines.launch
 
-class SignInScreen:Fragment(layout.sign_in_screen){
-    private var binding:SignInScreenBinding? = null
-    private lateinit var  loginCredentials: LoginCredentials
-    private lateinit var  loginUIState: LoginUiState
-    private lateinit var viewModel:LoginViewModel
+class SignInScreen : Fragment(layout.sign_in_screen) {
+    private var binding: SignInScreenBinding? = null
+    private lateinit var loginCredentials: LoginCredentials
+    private lateinit var loginUIState: LoginUiState
+    private lateinit var viewModel: LoginViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = ViewModelProvider(
-            this,LoginViewModelFactory())
+            this, LoginViewModelFactory()
+        )
             .get(LoginViewModel::class.java)
     }
 
@@ -39,11 +40,11 @@ class SignInScreen:Fragment(layout.sign_in_screen){
 
         binding = SignInScreenBinding.bind(view)
         binding?.mainConstraint?.clipToOutline = true
-        binding?.backButton?.setOnClickListener{
+        binding?.backButton?.setOnClickListener {
             parentFragment?.parentFragmentManager?.popBackStack()
         }
 
-        binding?.entry?.setOnClickListener{
+        binding?.entry?.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.loginUser(requireContext()).join()
                 subscribeErrorMessage()
@@ -61,7 +62,7 @@ class SignInScreen:Fragment(layout.sign_in_screen){
         binding = null
     }
 
-    private fun subscribeErrorMessage(){
+    private fun subscribeErrorMessage() {
         binding?.apply {
             exceptionError.visibility =
                 loginUIState.exceptionErrorView
@@ -71,10 +72,10 @@ class SignInScreen:Fragment(layout.sign_in_screen){
     }
 
 
-    private fun setListeners(viewModel: LoginViewModel){
+    private fun setListeners(viewModel: LoginViewModel) {
         binding?.apply {
 
-            deleteLogin.setOnClickListener{
+            deleteLogin.setOnClickListener {
                 login.setText(INITIAL_FIELD_STATE)
                 viewModel.setLogin(INITIAL_FIELD_STATE)
                 viewModel.changeUIState("login")
@@ -82,7 +83,7 @@ class SignInScreen:Fragment(layout.sign_in_screen){
             }
 
 
-            passwordVisibility.setOnClickListener{
+            passwordVisibility.setOnClickListener {
                 viewModel.changeUIState("password")
                 passwordVisibility.setImageResource(loginUIState.passwordCurrentIcon)
                 password.inputType = loginUIState.passwordCurrentInputType
@@ -90,23 +91,23 @@ class SignInScreen:Fragment(layout.sign_in_screen){
         }
     }
 
-    private fun subscribeLogin(viewModel:LoginViewModel){
+    private fun subscribeLogin(viewModel: LoginViewModel) {
         this.lifecycleScope.launch {
-            viewModel.login.collect { credentialField:LoginCredentials ->
+            viewModel.login.collect { credentialField: LoginCredentials ->
                 loginCredentials = credentialField
             }
         }
     }
 
-    private fun subscribeLoginUi(viewModel: LoginViewModel){
+    private fun subscribeLoginUi(viewModel: LoginViewModel) {
         this.lifecycleScope.launch {
-            viewModel.loginUIState.collect{value:LoginUiState ->
+            viewModel.loginUIState.collect { value: LoginUiState ->
                 loginUIState = value
             }
         }
     }
 
-    private fun setValidationFields(viewModel:LoginViewModel) {
+    private fun setValidationFields(viewModel: LoginViewModel) {
         binding?.apply {
             val fieldActions = listOf(
                 FieldAction(login, "login") {
@@ -131,24 +132,30 @@ class SignInScreen:Fragment(layout.sign_in_screen){
             }
         }
     }
-    private fun isLoginValid(){
+
+    private fun isLoginValid() {
         binding?.apply {
             entry.isEnabled =
                 viewModel.loginValid.value.buttonState
             entry.setBackgroundResource(
-                viewModel.loginValid.value.buttonStyle)
+                viewModel.loginValid.value.buttonStyle
+            )
             entry.setTextAppearance(
-                viewModel.loginValid.value.buttonTextStyle)
+                viewModel.loginValid.value.buttonTextStyle
+            )
         }
     }
 
     private fun setTextChangeListener(editText: EditText, action: (String) -> Unit) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
-                s: CharSequence?, start: Int, count: Int, after: Int) {}
+                s: CharSequence?, start: Int, count: Int, after: Int
+            ) {
+            }
 
             override fun onTextChanged(
-                s: CharSequence?, start: Int, before: Int, count: Int) {
+                s: CharSequence?, start: Int, before: Int, count: Int
+            ) {
                 action(editText.text.toString())
                 isLoginValid()
             }

@@ -5,11 +5,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.moviecatalog.data.data.mappers.GenreMapper
 import com.example.moviecatalog.data.data.mappers.MovieModelMapper
 import com.example.moviecatalog.data.data.mappers.PageInfoMapper
+import com.example.moviecatalog.data.data.remote.dataSource.FavoriteMovieServiceProvider
 import com.example.moviecatalog.data.data.remote.dataSource.MovieServiceProvider
+import com.example.moviecatalog.data.data.repository.FavoriteMoviesRepositoryImpl
 import com.example.moviecatalog.data.data.repository.MovieRepositoryImpl
+import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
+import com.example.moviecatalog.domain.usecase.AddFavoriteMoviesUseCase
+import com.example.moviecatalog.domain.usecase.GetFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
+import com.example.moviecatalog.domain.usecase.RemoveFavoriteMoviesUseCase
 
-class MovieScreenViewModelFactory:ViewModelProvider.Factory {
+class MovieScreenViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MovieScreenViewModel(
             GetMoviePageUseCase(
@@ -18,6 +24,25 @@ class MovieScreenViewModelFactory:ViewModelProvider.Factory {
                     MovieModelMapper(GenreMapper()),
                     PageInfoMapper()
                 )
-            )) as T
+            ),
+            GetFavoriteMoviesUseCase(
+                FavoriteMoviesRepositoryImpl(
+                    PrefsTokenStorage,
+                    FavoriteMovieServiceProvider()
+                )
+            ),
+            AddFavoriteMoviesUseCase(
+                FavoriteMoviesRepositoryImpl(
+                    PrefsTokenStorage,
+                    FavoriteMovieServiceProvider()
+                )
+            ),
+            RemoveFavoriteMoviesUseCase(
+                FavoriteMoviesRepositoryImpl(
+                    PrefsTokenStorage,
+                    FavoriteMovieServiceProvider()
+                )
+            )
+        ) as T
     }
 }

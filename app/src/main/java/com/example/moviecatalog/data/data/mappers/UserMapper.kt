@@ -4,7 +4,7 @@ import com.example.moviecatalog.data.data.remote.entities.UserRegisterModelDTO
 import com.example.moviecatalog.domain.entity.UserRegisterModel
 
 class UserMapper {
-    fun map (user:UserRegisterModel):UserRegisterModelDTO{
+    fun map(user: UserRegisterModel): UserRegisterModelDTO {
         return UserRegisterModelDTO(
             userName = user.userName,
             name = user.name,

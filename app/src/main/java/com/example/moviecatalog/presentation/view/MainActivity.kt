@@ -21,15 +21,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val rootView = findViewById<View>(android.R.id.content)
         hideNavigationBar(this.window)
-        if (savedInstanceState == null){
+        if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer,WelcomeScreen())
+                .replace(R.id.fragmentContainer, WelcomeScreen())
                 .commit()
             enableEdgeToEdge()
-            addKeybordListener(rootView,this.window)
+            addKeybordListener(rootView, this.window)
         }
 
     }
+
     companion object {
         fun hideNavigationBar(window: Window) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fun addKeybordListener(rootView: View,window: Window) {
+        fun addKeybordListener(rootView: View, window: Window) {
             rootView.setOnApplyWindowInsetsListener { _, insets ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
                     insets.isVisible(WindowInsets.Type.ime())

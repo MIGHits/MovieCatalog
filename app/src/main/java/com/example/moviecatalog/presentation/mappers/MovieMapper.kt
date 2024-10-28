@@ -4,7 +4,7 @@ import com.example.moviecatalog.domain.entity.MovieElementModel
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 
 class MovieMapper {
-    private fun map(movie:MovieElementModel):MovieElementModelUI{
+    private fun map(movie: MovieElementModel): MovieElementModelUI {
         return MovieElementModelUI(
             name = movie.name,
             poster = movie.poster,
@@ -14,7 +14,7 @@ class MovieMapper {
         )
     }
 
-    fun map(movieList:List<MovieElementModel>):List<MovieElementModelUI>{
+    fun map(movieList: List<MovieElementModel>): List<MovieElementModelUI> {
         return movieList.map { map(it) }
     }
 }

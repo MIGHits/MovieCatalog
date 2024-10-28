@@ -14,7 +14,7 @@ import com.example.moviecatalog.presentation.view.navigationBarFragments.MovieSc
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
-class AppNavigationActivity:AppCompatActivity() {
+class AppNavigationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAppNavigationBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,21 +34,24 @@ class AppNavigationActivity:AppCompatActivity() {
                         .commit()
                     true
                 }
+
                 R.id.films -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, MovieScreen())
                         .commit()
                     true
                 }
+
                 R.id.library -> {
                     println("3")
                     true
                 }
 
-                R.id.profile->{
+                R.id.profile -> {
                     println("4")
                     true
                 }
+
                 else -> false
             }
         }

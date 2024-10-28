@@ -5,9 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moviecatalog.common.Constants.MOVIE_STORY_DURATION
 import jp.shts.android.storiesprogressview.StoriesProgressView
 
+
 class ScrollListener(
     private val layoutManager: LinearLayoutManager,
-    private val progressBar:StoriesProgressView) : RecyclerView.OnScrollListener() {
+    private val progressBar: StoriesProgressView
+) : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)

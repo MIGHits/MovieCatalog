@@ -5,7 +5,7 @@ import com.example.moviecatalog.domain.entity.LoginBody
 import com.example.moviecatalog.domain.repository.AuthRepository
 
 class LoginUseCase(private val authRepository: AuthRepository) {
-    suspend operator fun invoke(loginCredentials: LoginBody){
+    suspend operator fun invoke(loginCredentials: LoginBody) {
         authRepository.login(loginCredentials)
     }
 }

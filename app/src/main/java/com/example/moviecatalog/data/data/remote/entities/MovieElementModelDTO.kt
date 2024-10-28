@@ -1,7 +1,5 @@
 package com.example.moviecatalog.data.data.remote.entities
 
-import java.time.Year
-
 data class MovieElementModelDTO(
     val id:String,
     val name:String?,
