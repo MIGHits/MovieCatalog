@@ -11,6 +11,7 @@ import com.example.moviecatalog.databinding.ActivityAppNavigationBinding
 import com.example.moviecatalog.presentation.view.MainActivity.Companion.addKeybordListener
 import com.example.moviecatalog.presentation.view.navigationBarFragments.FeedScreen
 import com.example.moviecatalog.presentation.view.navigationBarFragments.MovieScreen
+import com.example.moviecatalog.presentation.view.navigationBarFragments.ProfileScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
@@ -48,7 +49,9 @@ class AppNavigationActivity : AppCompatActivity() {
                 }
 
                 R.id.profile -> {
-                    println("4")
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, ProfileScreen())
+                        .commit()
                     true
                 }
 

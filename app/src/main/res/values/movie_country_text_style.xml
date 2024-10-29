@@ -3,7 +3,7 @@
     <style name="movieCountry">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/TextGray</item>
-        <item name="android:fontFamily">@font/manrope_bold</item>
+        <item name="android:fontFamily">@font/manrope_medium</item>
         <item name="android:lineHeight">20sp</item>
         <item name="android:fontWeight">500</item>
     </style>

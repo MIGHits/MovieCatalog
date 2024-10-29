@@ -31,4 +31,10 @@
     <string name="likedMovies">Мне нравится</string>
     <string name="allMovies">Все</string>
     <string name="movieCollection">Все фильмы</string>
+    <string name="personal_info">Личная Информация</string>
+    <string name="gender">Пол</string>
+    <string name="friends">Мои друзья</string>
+    <string name="logout">Выход</string>
+    <string name="closeDialog">Закрыть</string>
+    <string name="applyDialog">Применить</string>
 </resources>

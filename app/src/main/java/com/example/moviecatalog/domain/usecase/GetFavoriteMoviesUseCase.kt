@@ -6,7 +6,6 @@ import com.example.moviecatalog.domain.repository.FavoriteMovieRepository
 
 class GetFavoriteMoviesUseCase(private val repository: FavoriteMovieRepository) {
     suspend operator fun invoke(): List<MovieElementModel>? {
-        Log.d("Rep","true")
         return repository.getFavorites()
     }
 }

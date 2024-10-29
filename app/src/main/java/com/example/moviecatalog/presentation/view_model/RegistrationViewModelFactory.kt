@@ -6,7 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.moviecatalog.data.data.remote.dataSource.AuthServiceProvider
 import com.example.moviecatalog.data.data.repository.AuthRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
-import com.example.moviecatalog.domain.usecase.DateConverter
+import com.example.moviecatalog.domain.usecase.DateConverterUseCase
 import com.example.moviecatalog.domain.usecase.RegisterUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateBirthDateUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateEmailUseCase
@@ -24,7 +24,7 @@ class RegistrationViewModelFactory : ViewModelProvider.Factory {
             ValidatePasswordConfirmUseCase(),
             ValidateBirthDateUseCase(),
             ValidateNameField(),
-            DateConverter(),
+            DateConverterUseCase(),
             RegisterUseCase(
                 AuthRepositoryImpl(
                     PrefsTokenStorage,

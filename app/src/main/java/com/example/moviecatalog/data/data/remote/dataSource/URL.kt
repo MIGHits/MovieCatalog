@@ -10,4 +10,6 @@ object URL {
     const val FAVORITES:String = "api/favorites"
     const val ADD_FAVORITES:String = "api/favorites/{id}/add"
     const val REMOVE_FAVORITES:String = "api/favorites/{id}/delete"
+    const val GET_PROFILE:String = "api/account/profile"
+    const val UPDATE_PROFILE:String = "api/account/profile"
 }

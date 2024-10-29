@@ -13,7 +13,7 @@ import com.example.moviecatalog.common.Constants.EXCEPTION_ERROR
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.common.Constants.UNIQUE_LOGIN_ERROR
 import com.example.moviecatalog.domain.entity.UserRegisterModel
-import com.example.moviecatalog.domain.usecase.DateConverter
+import com.example.moviecatalog.domain.usecase.DateConverterUseCase
 import com.example.moviecatalog.domain.usecase.RegisterUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateBirthDateUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateEmailUseCase
@@ -22,13 +22,11 @@ import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordConfir
 import com.example.moviecatalog.domain.usecase.Validation.ValidatePasswordUseCase
 import com.example.moviecatalog.domain.usecase.Validation.ValidateNameField
 import com.example.moviecatalog.presentation.entity.RegistrationCredentials
-import com.example.moviecatalog.presentation.entity.UserRegisterUIModel
 import com.example.moviecatalog.presentation.state.ButtonState
 import com.example.moviecatalog.presentation.state.RegistrationState
 import com.example.moviecatalog.presentation.state.RegistrationUIState
 import com.example.moviecatalog.presentation.view.AppNavigationActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -41,7 +39,7 @@ class RegistrationViewModel(
     private val validatePasswordConfirmUseCase: ValidatePasswordConfirmUseCase,
     private val validateBirthDateUseCase: ValidateBirthDateUseCase,
     private val validateNameField: ValidateNameField,
-    private val dateConverter: DateConverter,
+    private val dateConverter: DateConverterUseCase,
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
 
