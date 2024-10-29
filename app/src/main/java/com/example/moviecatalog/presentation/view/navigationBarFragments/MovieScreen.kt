@@ -1,38 +1,37 @@
 package com.example.moviecatalog.presentation.view.navigationBarFragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.MOVIE_STORY_DURATION
-import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
 import com.example.moviecatalog.databinding.MoviesScreenBinding
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import com.example.moviecatalog.presentation.mappers.MovieAdapterMapper
-import com.example.moviecatalog.presentation.mappers.MovieMapper
 import com.example.moviecatalog.presentation.view.adapter.FavoriteMovieAdapter
 import com.example.moviecatalog.presentation.view.adapter.MovieAdapterTop
+import com.example.moviecatalog.presentation.view.adapter.MovieCollectionRecyclerAdapter
 import com.example.moviecatalog.presentation.view_model.MovieScreenViewModel
 import com.example.moviecatalog.presentation.view_model.MovieScreenViewModelFactory
 import jp.shts.android.storiesprogressview.StoriesProgressView
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 
 class MovieScreen : Fragment(R.layout.movies_screen) {
     private lateinit var binding: MoviesScreenBinding
     private lateinit var viewModel: MovieScreenViewModel
     private lateinit var moviePage: List<MovieElementModelUI>
-    private lateinit var favoriteMovies: List<MovieElementModelUI>
 
     private val movieTopAdapterMapper = MovieAdapterMapper()
-    private val movieMapper = MovieMapper()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,25 +47,30 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
         val progressBar = binding.progressBar
         val topMovieRecycler = binding.movieHorizontalRecyclerTop
         val adapterTop = MovieAdapterTop()
-        val snapHelper = LinearSnapHelper()
+        val snapHelperTop = LinearSnapHelper()
+        val snapHelperFavorites = LinearSnapHelper()
         val favoritesRecycler = binding.favoriteMoviesRecycler
+        val movieCollectionRecycler = binding.movieCollectionRecycler
 
 
         randomMovieBtn.setOnClickListener {
 
         }
+        lifecycleScope.launch {
+            initMovieStoriesCarousel(
+                topMovieRecycler,
+                adapterTop,
+                progressBar,
+                snapHelperTop
+            ).join()
 
-        initMovieStoriesCarousel(
-            topMovieRecycler,
-            adapterTop,
-            progressBar,
-            snapHelper
-        )
+            initFavorites(
+                favoritesRecycler,
+                snapHelperFavorites
+            )
 
-        initFavorites(
-            favoritesRecycler,
-            snapHelper
-        )
+            initMovieCollection(movieCollectionRecycler)
+        }
     }
 
     private fun initMovieStoriesCarousel(
@@ -97,6 +101,7 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
             false
         )
 
+        viewModel.banPage(moviePage)
         adapter.data = movieTopAdapterMapper.map(moviePage)
 
         topMovieRecycler
@@ -185,8 +190,42 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
         )
         recyclerView.adapter =
             FavoriteMovieAdapter(recyclerView.layoutManager as LinearLayoutManager)
-        recyclerView.addOnScrollListener(FavoritesRecyclerScroller(recyclerView.layoutManager as LinearLayoutManager))
+        recyclerView.addOnScrollListener(
+            FavoritesRecyclerScroller(
+                recyclerView.layoutManager as LinearLayoutManager
+            )
+        )
         snapHelper.attachToRecyclerView(recyclerView)
         subscribeFavoriteMovies(recyclerView.adapter as FavoriteMovieAdapter)
     }
+
+    private fun initMovieCollection(recyclerView: RecyclerView) {
+        recyclerView.layoutManager = GridLayoutManager(
+            requireContext(), 3, GridLayoutManager.VERTICAL, false
+        )
+
+        recyclerView.adapter =
+            MovieCollectionRecyclerAdapter()
+        subscribeMovieCollection(recyclerView.adapter as MovieCollectionRecyclerAdapter)
+
+        recyclerView.addOnScrollListener(
+            MovieCollectionScroller(
+                recyclerView.layoutManager as GridLayoutManager,
+                recyclerView.adapter as MovieCollectionRecyclerAdapter,
+                viewModel
+            )
+        )
+    }
+
+
+    private fun subscribeMovieCollection(adapter: MovieCollectionRecyclerAdapter) =
+        lifecycleScope.launch {
+            viewModel.addNewPageToCollection(1).join()
+            viewModel.movieCollection.collect { movieCollection ->
+                if (movieCollection != null) {
+                    adapter.data.addAll(movieCollection)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
 }

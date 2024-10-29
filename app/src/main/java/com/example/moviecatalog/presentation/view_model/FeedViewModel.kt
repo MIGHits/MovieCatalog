@@ -2,6 +2,7 @@ package com.example.moviecatalog.presentation.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase) : ViewModel() {
-    private val _movieModel = MutableStateFlow<MovieElementModelUI>(MovieElementModelUI())
+    private val _movieModel =
+        MutableStateFlow<MovieElementModelUI>(MovieElementModelUI(id = INITIAL_FIELD_STATE))
     val movieModel: StateFlow<MovieElementModelUI> get() = _movieModel
 
     private fun randomMovie(lowerBound: Int, upperBound: Int): Int {
@@ -24,7 +26,7 @@ class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase) : View
             val randomMovie = moviePage.movies?.get(radomMovieIndex)
             _movieModel.value = _movieModel.value.copy(
                 name = randomMovie?.name,
-                id = randomMovie?.id,
+                id = randomMovie?.id ?: INITIAL_FIELD_STATE,
                 poster = randomMovie?.poster,
                 country = randomMovie?.country,
                 year = randomMovie?.year,

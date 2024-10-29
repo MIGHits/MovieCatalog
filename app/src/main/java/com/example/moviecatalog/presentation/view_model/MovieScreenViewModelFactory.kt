@@ -10,10 +10,8 @@ import com.example.moviecatalog.data.data.remote.dataSource.MovieServiceProvider
 import com.example.moviecatalog.data.data.repository.FavoriteMoviesRepositoryImpl
 import com.example.moviecatalog.data.data.repository.MovieRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
-import com.example.moviecatalog.domain.usecase.AddFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.GetFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
-import com.example.moviecatalog.domain.usecase.RemoveFavoriteMoviesUseCase
 
 class MovieScreenViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -26,18 +24,6 @@ class MovieScreenViewModelFactory : ViewModelProvider.Factory {
                 )
             ),
             GetFavoriteMoviesUseCase(
-                FavoriteMoviesRepositoryImpl(
-                    PrefsTokenStorage,
-                    FavoriteMovieServiceProvider()
-                )
-            ),
-            AddFavoriteMoviesUseCase(
-                FavoriteMoviesRepositoryImpl(
-                    PrefsTokenStorage,
-                    FavoriteMovieServiceProvider()
-                )
-            ),
-            RemoveFavoriteMoviesUseCase(
                 FavoriteMoviesRepositoryImpl(
                     PrefsTokenStorage,
                     FavoriteMovieServiceProvider()

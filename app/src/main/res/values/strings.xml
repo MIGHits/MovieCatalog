@@ -30,4 +30,5 @@
     <string name="RandomMovie">Случайный фильм</string>
     <string name="likedMovies">Мне нравится</string>
     <string name="allMovies">Все</string>
+    <string name="movieCollection">Все фильмы</string>
 </resources>

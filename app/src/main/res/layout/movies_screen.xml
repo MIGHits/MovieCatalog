@@ -54,6 +54,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/movie_horizontal_recycler_top"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="292dp"
                 android:layout_marginTop="32dp"
@@ -62,24 +63,24 @@
 
                 <com.veeyaar.supergradienttextview.GradientTextView
                     android:id="@+id/likedMovies"
-                    android:textAppearance="@style/likedMovies"
-                    android:text="@string/likedMovies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    app:startColor="@color/primaryButtonDefault1"
+                    android:text="@string/likedMovies"
+                    android:textAppearance="@style/likedMovies"
                     app:endColor="@color/primaryButtonDefault2"
                     app:isVertical="false"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:startColor="@color/primaryButtonDefault1" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
+                    android:text="@string/allMovies"
                     android:textAppearance="@style/randomMovieStyle"
                     android:textColor="@color/TextGray"
-                    android:text="@string/allMovies"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -90,6 +91,40 @@
                     android:clipChildren="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="364dp"
+                android:layout_height="554dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+                <com.veeyaar.supergradienttextview.GradientTextView
+                    android:id="@+id/gradientTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movieCollection"
+                    android:textAppearance="@style/likedMovies"
+                    app:endColor="@color/primaryButtonDefault2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:startColor="@color/primaryButtonDefault1" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/movieCollectionRecycler"
+                    android:layout_width="364dp"
+                    android:layout_height="514dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/gradientTextView">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

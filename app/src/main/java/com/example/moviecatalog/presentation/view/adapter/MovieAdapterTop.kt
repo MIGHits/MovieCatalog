@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviecatalog.R
+import com.example.moviecatalog.databinding.MoviesScreenTopRecyclerItemBinding
 import com.squareup.picasso.Picasso
 
 class MovieAdapterTop : RecyclerView.Adapter<MovieAdapterTop.MovieAdapterViewHolder>() {
@@ -18,11 +19,12 @@ class MovieAdapterTop : RecyclerView.Adapter<MovieAdapterTop.MovieAdapterViewHol
         }
 
     class MovieAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val moviePoster: ImageView = itemView.findViewById(R.id.currentImage)
-        val movieTittle: TextView = itemView.findViewById(R.id.movieLargeTittle)
-        val movieGenreFirst: TextView = itemView.findViewById(R.id.first)
-        val movieGenreSecond: TextView = itemView.findViewById(R.id.second)
-        val movieGenreThird: TextView = itemView.findViewById(R.id.third)
+        val binding = MoviesScreenTopRecyclerItemBinding.bind(itemView)
+        val moviePoster = binding.currentImage
+        val movieTittle = binding.movieLargeTittle
+        val movieGenreFirst = binding.first
+        val movieGenreSecond = binding.second
+        val movieGenreThird = binding.third
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapterViewHolder {

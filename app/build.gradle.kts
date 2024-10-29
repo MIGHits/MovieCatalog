@@ -1,4 +1,5 @@
-import org.jetbrains.kotlin.backend.wasm.ir2wasm.bind
+import shadow.bundletool.com.android.tools.r8.internal.id
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -28,6 +29,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -37,20 +39,21 @@ android {
 
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
 dependencies {
-    implementation (libs.storiesprogressview.v30){
-        exclude ("com.android.support")
+    implementation(libs.storiesprogressview.v30) {
+        exclude("com.android.support")
     }
-    implementation (libs.veeyaarvr.supergradienttextview)
+    implementation(libs.veeyaarvr.supergradienttextview)
     implementation(libs.kotlin.stdlib.jdk7)
-    implementation (libs.squareup.picasso)
-    implementation (libs.converter.gson)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.squareup.picasso)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.retrofit)
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit.kotlinx.serialization.converter)
@@ -63,6 +66,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.graphics.android)
+    implementation(libs.androidx.annotation)
+    implementation (libs.androidx.databinding.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

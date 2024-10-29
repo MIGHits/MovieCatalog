@@ -17,4 +17,12 @@
     <color name="progress_max_active">@color/Accent</color>
     <color name="progress_primary">@color/Accent</color>
     <color name="progress_secondary">@color/TextGray</color>
+    <color name="rating1.0">#FF1500</color>
+    <color name="rating2.3">#FF2B00</color>
+    <color name="rating3.6">#FF4000</color>
+    <color name="rating4.0">#FF8000</color>
+    <color name="rating6.0">#F4E225</color>
+    <color name="rating7.4">#9CB814</color>
+    <color name="rating8.5">#4EAD1F</color>
+    <color name="rating9.9">#00991A</color>
 </resources>
