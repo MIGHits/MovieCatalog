@@ -1,4 +1,4 @@
-package com.example.moviecatalog.presentation.view.navigationBarFragments
+package com.example.moviecatalog.presentation.view.adapter.RecyclerListener
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView

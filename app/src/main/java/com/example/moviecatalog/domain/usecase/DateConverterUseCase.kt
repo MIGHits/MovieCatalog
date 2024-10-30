@@ -1,6 +1,8 @@
 package com.example.moviecatalog.domain.usecase
 
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -24,6 +26,12 @@ class DateConverterUseCase() {
     fun convertRemoteToUI(date:String):String {
         val parsedDate = isoDateFormat.parse(date)
         return uiDateFormat.format(parsedDate as Date)
+    }
+
+    fun getCurrentTime(): String {
+        val currentTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("HH")
+        return currentTime.format(formatter)
     }
 
 }

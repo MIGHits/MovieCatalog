@@ -24,6 +24,11 @@ object Constants{
     const val MIN_SWIPE_DISTANCE = -250
     const val MOVIE_STORY_DURATION = 5000L
 
+    const val MORNING_GREETINGS = "Доброе утро,"
+    const val DAY_GREETINGS = "Добрый день,"
+    const val EVENING_GREETINGS = "Добрый вечер,"
+    const val NIGHT_GREETINGS = "Доброй ночи,"
+
     const val MALE = 0
     const val FEMALE = 1
 }

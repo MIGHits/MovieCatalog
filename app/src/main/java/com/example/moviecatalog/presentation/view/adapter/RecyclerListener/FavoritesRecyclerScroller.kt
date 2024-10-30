@@ -1,9 +1,7 @@
-package com.example.moviecatalog.presentation.view.navigationBarFragments
+package com.example.moviecatalog.presentation.view.adapter.RecyclerListener
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moviecatalog.common.Constants.MOVIE_STORY_DURATION
-import jp.shts.android.storiesprogressview.StoriesProgressView
 
 class FavoritesRecyclerScroller(private val layoutManager: LinearLayoutManager) :
     RecyclerView.OnScrollListener() {

@@ -29,6 +29,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout() {
+        authApi.logout()
         tokenStorage.removeToken()
     }
 }

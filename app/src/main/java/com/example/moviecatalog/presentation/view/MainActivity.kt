@@ -36,7 +36,10 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.let { controller ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        controller.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+                        controller.hide(
+                            WindowInsets.Type.navigationBars() or
+                                    WindowInsets.Type.statusBars()
+                        )
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         controller.systemBarsBehavior =
@@ -50,7 +53,10 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.let { controller ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        controller.show(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+                        controller.show(
+                            WindowInsets.Type.navigationBars() or
+                                    WindowInsets.Type.statusBars()
+                        )
                     }
                 }
             }

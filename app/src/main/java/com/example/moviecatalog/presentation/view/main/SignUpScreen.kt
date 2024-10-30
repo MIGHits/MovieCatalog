@@ -48,7 +48,10 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
 
         binding?.constraintLayout2?.clipToOutline = true
         binding?.backButton?.setOnClickListener {
-            parentFragment?.parentFragmentManager?.popBackStack()
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, WelcomeScreen())
+                .commit()
         }
         binding?.register?.setOnClickListener {
             lifecycleScope.launch {

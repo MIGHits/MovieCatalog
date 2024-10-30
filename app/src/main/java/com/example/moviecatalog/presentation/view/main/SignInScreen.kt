@@ -40,8 +40,12 @@ class SignInScreen : Fragment(layout.sign_in_screen) {
 
         binding = SignInScreenBinding.bind(view)
         binding?.mainConstraint?.clipToOutline = true
+
         binding?.backButton?.setOnClickListener {
-            parentFragment?.parentFragmentManager?.popBackStack()
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, WelcomeScreen())
+                .commit()
         }
 
         binding?.entry?.setOnClickListener {

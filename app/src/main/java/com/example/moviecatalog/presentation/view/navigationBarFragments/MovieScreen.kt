@@ -1,6 +1,5 @@
 package com.example.moviecatalog.presentation.view.navigationBarFragments
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -19,12 +18,14 @@ import com.example.moviecatalog.presentation.mappers.MovieAdapterMapper
 import com.example.moviecatalog.presentation.view.adapter.FavoriteMovieAdapter
 import com.example.moviecatalog.presentation.view.adapter.MovieAdapterTop
 import com.example.moviecatalog.presentation.view.adapter.MovieCollectionRecyclerAdapter
+import com.example.moviecatalog.presentation.view.adapter.RecyclerListener.FavoritesRecyclerScroller
+import com.example.moviecatalog.presentation.view.adapter.RecyclerListener.MovieCollectionScroller
+import com.example.moviecatalog.presentation.view.adapter.RecyclerListener.ScrollListener
 import com.example.moviecatalog.presentation.view_model.MovieScreenViewModel
 import com.example.moviecatalog.presentation.view_model.MovieScreenViewModelFactory
 import jp.shts.android.storiesprogressview.StoriesProgressView
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 
 class MovieScreen : Fragment(R.layout.movies_screen) {
     private lateinit var binding: MoviesScreenBinding

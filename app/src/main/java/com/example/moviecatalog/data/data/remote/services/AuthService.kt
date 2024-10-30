@@ -6,7 +6,7 @@ import com.example.moviecatalog.data.data.remote.dataSource.URL.REGISTER
 import com.example.moviecatalog.data.data.remote.entities.LoginCredentialsDTO
 import com.example.moviecatalog.data.data.remote.entities.Token
 import com.example.moviecatalog.data.data.remote.entities.UserRegisterModelDTO
-import com.example.moviecatalog.domain.entity.UserRegisterModel
+
 import retrofit2.http.Body
 import retrofit2.http.POST
 

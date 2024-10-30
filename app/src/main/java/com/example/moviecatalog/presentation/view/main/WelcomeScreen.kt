@@ -18,13 +18,13 @@ class WelcomeScreen : Fragment(R.layout.welcome_screen) {
 
     private fun navigateAccountEntrance() {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.welcome_screen_layer, SignInScreen())
+            .replace(R.id.fragmentContainer, SignInScreen())
             .commit()
     }
 
     private fun navigateRegistration() {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.welcome_screen_layer, SignUpScreen())
+            .replace(R.id.fragmentContainer, SignUpScreen())
             .commit()
     }
 
