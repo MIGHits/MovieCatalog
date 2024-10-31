@@ -21,6 +21,7 @@ class AppNavigationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_app_navigation)
+
         binding = ActivityAppNavigationBinding.inflate(layoutInflater)
 
         val rootView = binding.root

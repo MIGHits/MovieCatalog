@@ -1,33 +1,49 @@
 [versions]
 agp = "8.6.1"
+coilCompose = "2.0.0"
 databindingRuntime = "8.7.1"
+foundation = "1.7.5"
 githubStoriesprogressview = "3.0.0"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 kotlinStdlibJdk7 = "1.9.20"
-lifecycleViewmodelKtx = "2.8.6"
+lifecycleViewmodelKtx = "2.8.7"
 logging-interceptor = "4.11.0"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.7.3"
+materialVersion = "1.7.4"
+navigationCompose = "2.8.3"
 picassoVersion = "2.71828"
 retrofit-kotlinx-serialization-converter = "1.0.0"
 material = "1.12.0"
 activity = "1.9.3"
-constraintlayout = "2.1.4"
+constraintlayout = "2.2.0"
 retrofit = "2.9.0"
 room = "2.6.1"
 ksp = "2.0.0-1.0.22"
 supergradienttextviewVersion = "1.1"
 uiGraphicsAndroid = "1.7.4"
-annotation = "1.9.0"
+annotation = "1.9.1"
+runtimeAndroid = "1.7.5"
+appcompat = "1.7.0"
 
 
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-databinding-runtime = { module = "androidx.databinding:databinding-runtime", version.ref = "databindingRuntime" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationCompose" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationCompose" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "uiGraphicsAndroid" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiGraphicsAndroid" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiGraphicsAndroid" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -48,8 +64,11 @@ storiesprogressview-v30 = { module = "com.github.shts:StoriesProgressView", vers
 androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
 veeyaarvr-supergradienttextview = { module = "com.github.veeyaarVR:SuperGradientTextView", version.ref = "supergradienttextviewVersion" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

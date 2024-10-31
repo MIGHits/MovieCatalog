@@ -4,6 +4,7 @@ import shadow.bundletool.com.android.tools.r8.internal.id
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -18,6 +19,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -41,7 +45,11 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 }
 
@@ -49,6 +57,17 @@ dependencies {
     implementation(libs.storiesprogressview.v30) {
         exclude("com.android.support")
     }
+    implementation (libs.androidx.navigation.compose)
+    implementation (libs.androidx.navigation.fragment.ktx)
+    implementation (libs.androidx.navigation.ui.ktx)
+    implementation (libs.coil.compose)
+    implementation(libs.androidx.ui)
+    implementation (libs.androidx.foundation)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.veeyaarvr.supergradienttextview)
     implementation(libs.kotlin.stdlib.jdk7)
     implementation(libs.squareup.picasso)
@@ -67,7 +86,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.graphics.android)
     implementation(libs.androidx.annotation)
-    implementation (libs.androidx.databinding.runtime)
+    implementation(libs.androidx.databinding.runtime)
+    implementation(libs.androidx.runtime.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

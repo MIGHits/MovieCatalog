@@ -37,4 +37,18 @@
     <string name="logout">Выход</string>
     <string name="closeDialog">Закрыть</string>
     <string name="applyDialog">Применить</string>
+    <string name="movie_service_rating">Рейтинг</string>
+    <string name="info">Информация</string>
+    <string name="countries">Страны</string>
+    <string name="country">Страна</string>
+    <string name="age">Возраст</string>
+    <string name="time">Время</string>
+    <string name="release_year">Год выхода</string>
+    <string name="producer">Режиссёр</string>
+    <string name="genres">Жанры</string>
+    <string name="budget_category">Финансы</string>
+    <string name="budget">Бюджет</string>
+    <string name="bank">Сборы в мире</string>
+    <string name="reviews">Отзывы</string>
+
 </resources>
