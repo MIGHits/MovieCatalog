@@ -22,9 +22,6 @@ class MainActivity : AppCompatActivity() {
         val rootView = findViewById<View>(android.R.id.content)
         hideNavigationBar(this.window)
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, WelcomeScreen())
-                .commit()
             enableEdgeToEdge()
             addKeybordListener(rootView, this.window)
         }

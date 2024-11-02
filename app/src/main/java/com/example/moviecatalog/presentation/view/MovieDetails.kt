@@ -1,6 +1,8 @@
 package com.example.moviecatalog.presentation.view
 
+import android.credentials.CredentialDescription
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -48,54 +50,135 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavArgs
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
+import androidx.navigation.navArgs
+import coil.compose.AsyncImage
 import com.example.moviecatalog.R
 import com.example.moviecatalog.R.drawable
+import com.example.moviecatalog.presentation.entity.GenreModelUI
 import com.example.moviecatalog.presentation.theme.backgroundColor
 import com.example.moviecatalog.presentation.theme.darkFaded
 import com.example.moviecatalog.presentation.theme.fadeoutFirst
 import com.example.moviecatalog.presentation.theme.fadeoutSecond
 import com.example.moviecatalog.presentation.theme.gradientFirst
 import com.example.moviecatalog.presentation.theme.gradientSecond
+import com.example.moviecatalog.presentation.view.navigationBarFragments.FeedScreen
+import com.example.moviecatalog.presentation.view.navigationBarFragments.MovieScreen
+import com.example.moviecatalog.presentation.view.navigationBarFragments.ProfileScreen
+import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModel
+import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModelFactory
+import kotlinx.coroutines.launch
 
 class MovieDetails : ComponentActivity() {
+    private lateinit var movieId: String
+    private lateinit var viewModel: MovieDetailsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
 
+        movieId = intent.extras?.getString(MOVIE_ID).toString()
+        viewModel = ViewModelProvider(
+            this,
+            MovieDetailsViewModelFactory()
+        ).get(MovieDetailsViewModel::class.java)
+
+        lifecycleScope.launch {
+            viewModel.getDetails(movieId).join()
+        }
+
+        setContent {
+            MovieDetailsScreen(viewModel)
         }
     }
-}
+
+    companion object {
+        const val MOVIE_ID = "MovieId"
+    }
+
+    private fun navigateBack() {
+        finish()
+    }
 
 
+    @Composable
+    fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
+        val details by remember { viewModel.movieDetails }
+        val scrollState = rememberScrollState()
 
-@Preview
-@Composable
-fun MovieDetailsScreen() {
-    val scrollState = rememberScrollState()
 
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(backgroundColor)
+        ) {
+            MovieImage(
+                details.poster,
+                Modifier.align(Alignment.TopCenter)
+            )
+            TopBar()
+            Column(
+                modifier = Modifier
+                    .padding(
+                        top = 148.dp,
+                        start = 24.dp,
+                        end = 24.dp,
+                    )
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+            ) {
+                Spacer(Modifier.height(263.dp))
+                MovieTittle(
+                    details.name.toString(),
+                    details.tagline.toString()
+                )
+                FriendsBlock()
+                details.description?.let { MovieDescription(it) }
+                MovieRatingBlock(details.kinopoiskRating, details.imdbRating)
+                details.country?.let {
+                    MovieMainInfo(
+                        it,
+                        details.ageLimit,
+                        details.time,
+                        details.year
+                    )
+                }
+                ProducerBlock(
+                    details.directorPoster,
+                    details.director.toString()
+                )
+                details.genres?.let { GenresBlock(it) }
+                MoneyBlock(
+                    details.budget,
+                    details.fees
+                )
+                ReviewBlock()
+            }
+        }
+    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-    ) {
-        MovieImage("", Modifier.align(Alignment.TopCenter))
+    @Composable
+    fun TopBar() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = 24.dp,
-                    top = 24.dp,
+                    top = 76.dp,
                     end = 24.dp
                 )
         ) {
             IconButton(
-                onClick = {},
+                onClick = { navigateBack() },
                 modifier = Modifier
                     .height(40.dp)
                     .width(40.dp)
@@ -135,441 +218,473 @@ fun MovieDetailsScreen() {
                 )
             }
         }
-        Column(
-            modifier = Modifier
-                .padding(
-                    top = 411.dp,
-                    start = 24.dp,
-                    end = 24.dp,
-                    bottom = 48.dp
+    }
+
+    @Composable
+    fun MovieTittle(movieTittle: String, tagline: String) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    Gradient(
+                        listOf(
+                            gradientFirst,
+                            gradientSecond
+                        )
+                    )
                 )
-                .fillMaxSize()
-                .verticalScroll(scrollState)
         ) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        Gradient(
-                            listOf(
-                                gradientFirst,
-                                gradientSecond
-                            )
-                        )
-                    )
-            ) {
-                Column(
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        bottom = 16.dp,
-                        top = 16.dp,
-                        end = 16.dp
-                    )
-                ) {
-                    Text(
-                        "1899",
-                        fontSize = 36.sp,
-                        lineHeight = 50.4.sp,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Text(
-                        text = "What is lost will be found",
-                        fontSize = 20.sp,
-                        lineHeight = 24.sp,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Row(modifier = Modifier.padding(16.dp)) {
-                    Box() {
-                        val list = listOf(
-                            drawable.active_profile,
-                            drawable.profile_image,
-                            drawable.profile_image
-                        )
-                        LazyRow() { items(list) { item -> FriendsAvatar(item) } }
-                    }
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
-                        text = "нравится n вашим друзьям",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        lineHeight = 20.sp
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
+            Column(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    bottom = 16.dp,
+                    top = 16.dp,
+                    end = 16.dp
+                )
             ) {
                 Text(
-                    modifier = Modifier.padding(16.dp),
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
+                    text = movieTittle,
+                    fontSize = 36.sp,
+                    lineHeight = 50.4.sp,
                     color = Color.White,
-                    text = "Группа европейских мигрантов покидает Лондон на пароходе, чтобы начать новую жизнь в Нью-Йорке. Когда они сталкиваются с другим судном, плывущим по течению в открытом море, их путешествие превращается в кошмар"
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = tagline,
+                    fontSize = 20.sp,
+                    lineHeight = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.rating_star, R.string.movie_service_rating)
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 12.dp,
-                                bottom = 12.dp,
-                                end = 16.dp
-                            )
-                            .fillMaxWidth()
-                    ) {
-                        MovieRating(
-                            drawable.mc_rating_logo, 9.7f,
-                            Modifier
-                                .padding()
-                                .weight(1.5f)
-                                .clip(
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .background(colorResource(R.color.screenBackgroundDark))
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        MovieRating(
-                            drawable.kp_rating_logo, 9.7f,
-                            Modifier
-                                .padding()
-                                .weight(1f)
-                                .clip(
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .background(colorResource(R.color.screenBackgroundDark))
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        MovieRating(
-                            drawable.imdb_rating_logo, 9.7f,
-                            Modifier
-                                .padding()
-                                .weight(1f)
-                                .clip(
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .background(colorResource(R.color.screenBackgroundDark))
-                        )
-                    }
+        }
+    }
+
+    @Composable
+    fun FriendsBlock() {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Row(modifier = Modifier.padding(16.dp)) {
+                Box() {
+                    val list = listOf(
+                        drawable.active_profile,
+                        drawable.profile_image,
+                        drawable.profile_image
+                    )
+                    LazyRow() { items(list) { item -> FriendsAvatar(item) } }
                 }
+                Text(
+                    modifier = Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
+                    text = "нравится n вашим друзьям",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    lineHeight = 20.sp
+                )
             }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.info_ic, R.string.info)
-                    Box(
-                        modifier = Modifier.padding(
+        }
+    }
+
+    @Composable
+    fun MovieDescription(description: String) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                fontSize = 16.sp,
+                lineHeight = 20.sp,
+                color = Color.White,
+                text = description
+            )
+        }
+    }
+
+    @Composable
+    fun MovieRatingBlock(kinopoiskRating: Double? = null, imdbRating: Double? = null) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.rating_star, R.string.movie_service_rating)
+                Row(
+                    modifier = Modifier
+                        .padding(
                             start = 16.dp,
                             top = 12.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
+                            bottom = 12.dp,
+                            end = 16.dp
                         )
-                    ) {
-                        Column {
-                            Row(verticalAlignment = Alignment.Top) {
-                                InfoBlock(R.string.countries, "Германия, США", 0.7f)
-                                Spacer(Modifier.width(8.dp))
-                                InfoBlock(R.string.age, "16+", 1f)
-                            }
-                            Spacer(Modifier.height(8.dp))
-                            Row(verticalAlignment = Alignment.Bottom) {
-                                InfoBlock(R.string.time, "1 ч 30 мин", 0.5f)
-                                Spacer(Modifier.width(8.dp))
-                                InfoBlock(R.string.release_year, "2022", 1f)
-                            }
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.budget_ic, R.string.producer)
-                    Box(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            top = 12.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(colorResource(R.color.screenBackgroundDark))
-                        ) {
-                            Image(
-                                painter = painterResource(
-                                    id = drawable.baran_odar
-                                ),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(
-                                        start = 12.dp,
-                                        top = 8.dp,
-                                        bottom = 8.dp,
-                                        end = 8.dp
-                                    )
-                                    .width(48.dp)
-                                    .height(48.dp)
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Fit
+                        .fillMaxWidth()
+                ) {
+                    MovieRating(
+                        drawable.mc_rating_logo, 9.7,
+                        Modifier
+                            .padding()
+                            .weight(1.5f)
+                            .clip(
+                                RoundedCornerShape(8.dp)
                             )
-                            Text(
-                                text = "Баран бо Одар",
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.CenterVertically)
-                            )
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.genres_ic, R.string.genres)
-                    Box(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            top = 12.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
-                        )
-                    ) {
-                        LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            items(listOf("Жанр 1", "Жанр 2", "Жанр 3", "Жанр 4")) { item ->
-                                Genre(item, false)
-                            }
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.budget_ic, R.string.budget_category)
-                    Box(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            top = 12.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
-                        )
-                    ) {
-                        Row {
-                            InfoBlock(R.string.budget, "$ 15 000 000", 0.5f)
-                            Spacer(Modifier.width(8.dp))
-                            InfoBlock(R.string.bank, "$ 30 000 000", 1f)
-                        }
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(darkFaded)
-            ) {
-                Column {
-                    BlockLabel(drawable.review_ic, R.string.reviews)
-                    Box(
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 12.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
-                            .clip(RoundedCornerShape(8.dp))
                             .background(colorResource(R.color.screenBackgroundDark))
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                FriendsAvatar(drawable.profile_image)
-                                Column(
-                                    modifier = Modifier
-                                        .padding(
-                                            start = 8.dp,
-                                            end = 8.dp
-                                        )
-                                        .fillMaxWidth(0.75f)
-                                ) {
-                                    Text(
-                                        text = "Анонимный пользователь",
-                                        fontSize = 12.sp,
-                                        lineHeight = 14.4.sp,
-                                        color = Color.White
-                                    )
-                                    Text(
-                                        text = "17 октября 2024",
-                                        fontSize = 12.sp,
-                                        lineHeight = 14.4.sp,
-                                        color = colorResource(R.color.GrayFaded)
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(colorResource(R.color.rating9_9))
-                                ) {
-                                    Icon(
-                                        painter = painterResource(drawable.review_rating_star),
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.padding(
-                                            start = 8.dp,
-                                            top = 6.dp,
-                                            bottom = 6.dp,
-                                            end = 4.dp
-                                        )
-                                    )
-                                    Text(
-                                        text = "10",
-                                        fontSize = 16.sp,
-                                        lineHeight = 20.sp,
-                                        color = Color.White,
-                                        modifier = Modifier
-                                            .padding(
-                                                top = 4.dp,
-                                                bottom = 4.dp,
-                                                end = 8.dp
-                                            )
-                                    )
-                                }
-                            }
-                            Text(
-                                "Если у вас взорвался мозг от «Тьмы» и вам это понравилось, то не переживайте. Новый сериал Барана бо Одара «1899» получился не хуже предшественника",
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(
-                                        top = 8.dp,
-                                        start = 12.dp,
-                                        end = 12.dp,
-                                        bottom = 12.dp
-                                    )
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                start = 16.dp,
-                                top = 12.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
-                            .fillMaxWidth()
-                    ) {
-                        TextButton(
-                            onClick = {},
-                            modifier = Modifier
-                                .padding(end = 24.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(
-                                    Gradient(
-                                        listOf(
-                                            gradientFirst,
-                                            gradientSecond
-                                        )
-                                    )
+                    )
+                    if (kinopoiskRating != null) {
+                        Spacer(Modifier.width(8.dp))
+                        MovieRating(
+                            drawable.kp_rating_logo, kinopoiskRating,
+                            Modifier
+                                .padding()
+                                .weight(1f)
+                                .clip(
+                                    RoundedCornerShape(8.dp)
                                 )
-                                .weight(3f)
-                        ) {
-                            Text(
-                                text = "Добавить отзыв",
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp,
-                                textAlign = TextAlign.Center,
-                                color = Color.White
-                            )
-                        }
-                        IconButton(
-                            onClick = {},
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(color = darkFaded)
-
-                        ) {
-                            Icon(
-                                painter = painterResource(id = drawable.back_icon),
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.padding(8.dp)
-                            )
-                        }
-                        IconButton(
-                            onClick = {},
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(color = colorResource(R.color.screenBackgroundDark))
-
-                        ) {
-                            Icon(
-                                painter = painterResource(id = drawable.forward_ic),
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.padding(8.dp)
-                            )
-                        }
-
+                                .background(colorResource(R.color.screenBackgroundDark))
+                        )
+                        Spacer(Modifier.width(8.dp))
+                    }
+                    if (imdbRating != null) {
+                        MovieRating(
+                            drawable.imdb_rating_logo, imdbRating,
+                            Modifier
+                                .padding()
+                                .weight(1f)
+                                .clip(
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .background(colorResource(R.color.screenBackgroundDark))
+                        )
                     }
                 }
             }
         }
     }
+
+    @Composable
+    fun MovieMainInfo(
+        country: String,
+        age: Int,
+        time: Int,
+        year: Int
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.info_ic, R.string.info)
+                Box(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    Column {
+                        Row(verticalAlignment = Alignment.Top) {
+                            InfoBlock(R.string.countries, country, 0.7f)
+                            Spacer(Modifier.width(8.dp))
+                            InfoBlock(R.string.age, "$age+", 1f)
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            InfoBlock(R.string.time, time.toString(), 0.5f)
+                            Spacer(Modifier.width(8.dp))
+                            InfoBlock(R.string.release_year, year.toString(), 1f)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ProducerBlock(directorPoster: String? = null, name: String) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.budget_ic, R.string.producer)
+                Box(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colorResource(R.color.screenBackgroundDark))
+                    ) {
+                        AsyncImage(
+                            model = directorPoster ?: drawable.profile_image,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(
+                                    start = 12.dp,
+                                    top = 8.dp,
+                                    bottom = 8.dp,
+                                    end = 8.dp
+                                )
+                                .width(48.dp)
+                                .height(48.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                        Text(
+                            text = name,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            lineHeight = 20.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterVertically)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun GenresBlock(genres: List<GenreModelUI>) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.genres_ic, R.string.genres)
+                Box(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        items(genres) { item ->
+                            item.name?.let { Genre(it, false) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MoneyBlock(budget: Int?, fees: Int?) {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.budget_ic, R.string.budget_category)
+                Box(
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    Row {
+                        InfoBlock(R.string.budget, "$ $budget", 0.5f)
+                        Spacer(Modifier.width(8.dp))
+                        InfoBlock(R.string.bank, "$ $fees", 1f)
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ReviewBlock() {
+        Box(
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 48.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(darkFaded)
+        ) {
+            Column {
+                BlockLabel(drawable.review_ic, R.string.reviews)
+                Box(
+                    modifier = Modifier
+                        .padding(
+                            start = 16.dp,
+                            top = 12.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        )
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colorResource(R.color.screenBackgroundDark))
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            FriendsAvatar(drawable.profile_image)
+                            Column(
+                                modifier = Modifier
+                                    .padding(
+                                        start = 8.dp,
+                                        end = 8.dp
+                                    )
+                                    .fillMaxWidth(0.75f)
+                            ) {
+                                Text(
+                                    text = "Анонимный пользователь",
+                                    fontSize = 12.sp,
+                                    lineHeight = 14.4.sp,
+                                    color = Color.White
+                                )
+                                Text(
+                                    text = "17 октября 2024",
+                                    fontSize = 12.sp,
+                                    lineHeight = 14.4.sp,
+                                    color = colorResource(R.color.GrayFaded)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(colorResource(R.color.rating9_9))
+                            ) {
+                                Icon(
+                                    painter = painterResource(drawable.review_rating_star),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(
+                                        start = 8.dp,
+                                        top = 6.dp,
+                                        bottom = 6.dp,
+                                        end = 4.dp
+                                    )
+                                )
+                                Text(
+                                    text = "10",
+                                    fontSize = 16.sp,
+                                    lineHeight = 20.sp,
+                                    color = Color.White,
+                                    modifier = Modifier
+                                        .padding(
+                                            top = 4.dp,
+                                            bottom = 4.dp,
+                                            end = 8.dp
+                                        )
+                                )
+                            }
+                        }
+                        Text(
+                            "Если у вас взорвался мозг от «Тьмы» и вам это понравилось, то не переживайте. Новый сериал Барана бо Одара «1899» получился не хуже предшественника",
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(
+                                    top = 8.dp,
+                                    bottom = 12.dp
+                                )
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp
+                        )
+                        .fillMaxWidth()
+                ) {
+                    TextButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(end = 24.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                Gradient(
+                                    listOf(
+                                        gradientFirst,
+                                        gradientSecond
+                                    )
+                                )
+                            )
+                            .weight(3f)
+                    ) {
+                        Text(
+                            text = "Добавить отзыв",
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+                    }
+                    IconButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color = darkFaded)
+
+                    ) {
+                        Icon(
+                            painter = painterResource(id = drawable.back_icon),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                    IconButton(
+                        onClick = {},
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(color = colorResource(R.color.screenBackgroundDark))
+
+                    ) {
+                        Icon(
+                            painter = painterResource(id = drawable.forward_ic),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+
+                }
+            }
+        }
+    }
 }
+
 
 @Composable
 fun Gradient(gradientColors: List<Color>): Brush {
@@ -683,7 +798,7 @@ fun BlockLabel(icon: Int, text: Int) {
 }
 
 @Composable
-fun MovieRating(logo: Int, rating: Float = 9.5f, modifier: Modifier) {
+fun MovieRating(logo: Int, rating: Double? = null, modifier: Modifier) {
     Box(modifier = modifier) {
         Row(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)) {
             Image(
@@ -727,7 +842,7 @@ fun FriendsAvatar(avatar: Int) {
 }
 
 @Composable
-fun MovieImage(url: String = "", modifier: Modifier) {
+fun MovieImage(url: String? = null, modifier: Modifier) {
 
     Box(
         modifier = modifier
@@ -740,10 +855,8 @@ fun MovieImage(url: String = "", modifier: Modifier) {
                 )
             )
     ) {
-        Image(
-            painter = painterResource(
-                id = drawable.movie_details_poster
-            ),
+        AsyncImage(
+            model = url,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -797,29 +910,3 @@ fun VisibilityTrackerExample() {
     }
 }
 
-@Preview
-@Composable
-fun LazyRowWithWeightExample() {
-    val items = listOf("Элемент 1", "Элемент 2", "Элемент 3")
-
-    Row {
-        Box(
-            modifier = Modifier
-                .background(Color.Red)
-                .height(150.dp)
-                .weight(1f)
-        )
-        Box(
-            modifier = Modifier
-                .background(Color.DarkGray)
-                .height(150.dp)
-                .weight(3f)
-        )
-        Box(
-            modifier = Modifier
-                .background(Color.Blue)
-                .height(150.dp)
-                .weight(2f)
-        )
-    }
-}

@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
+import com.example.moviecatalog.presentation.mappers.GenreMapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase) : ViewModel() {
+class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase,
+    private  val genreMapper: GenreMapper = GenreMapper()) : ViewModel() {
     private val _movieModel =
         MutableStateFlow<MovieElementModelUI>(MovieElementModelUI(id = INITIAL_FIELD_STATE))
     val movieModel: StateFlow<MovieElementModelUI> get() = _movieModel
@@ -30,7 +32,7 @@ class FeedViewModel(private val getMoviePageUseCase: GetMoviePageUseCase) : View
                 poster = randomMovie?.poster,
                 country = randomMovie?.country,
                 year = randomMovie?.year,
-                genres = randomMovie?.genres
+                genres = randomMovie?.genres?.let { genreMapper.map(it) }
             )
         }
 }

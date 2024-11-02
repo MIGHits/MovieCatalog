@@ -5,6 +5,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 object Constants{
     const val EMAIL_PATTERN = "[a-zA-Z0-9._-]{4,}+@[a-z]+\\.+[a-z]{2,}+"
     const val INITIAL_FIELD_STATE = ""
+    const val INITIAL_INT  = -1
     const val EMPTY_FIELD_ERROR = "Поле не может быть пустым"
     const val UNIQUE_LOGIN_ERROR = "Указанный логин уже занят"
     const val LOGIN_EXCEPTION = "Неправильный логин или пароль"

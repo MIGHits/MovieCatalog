@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
         <item
-            android:id="@+id/feed"
+            android:id="@+id/feedScreen"
             android:icon="@drawable/navbar_feed_selected"
             android:title="@string/feed" />
 
         <item
-            android:id="@+id/films"
+            android:id="@+id/movieScreen"
             android:icon="@drawable/movies_selector"
             android:title="@string/films" />
 
@@ -16,7 +16,7 @@
             android:title="@string/library" />
 
         <item
-            android:id="@+id/profile"
+            android:id="@+id/profileScreen"
             android:icon="@drawable/profile_selector"
             android:title="@string/profile" />
 </menu>

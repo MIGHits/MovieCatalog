@@ -2,7 +2,10 @@ package com.example.moviecatalog.presentation.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.moviecatalog.data.data.mappers.DirectorMapper
 import com.example.moviecatalog.data.data.mappers.GenreMapper
+import com.example.moviecatalog.data.data.mappers.KinopoiskMovieMapper
+import com.example.moviecatalog.data.data.mappers.MovieDetailsMapper
 import com.example.moviecatalog.data.data.mappers.MovieModelMapper
 import com.example.moviecatalog.data.data.mappers.PageInfoMapper
 import com.example.moviecatalog.data.data.remote.dataSource.FavoriteMovieServiceProvider
@@ -19,8 +22,11 @@ class MovieScreenViewModelFactory : ViewModelProvider.Factory {
             GetMoviePageUseCase(
                 MovieRepositoryImpl(
                     MovieServiceProvider(),
-                    MovieModelMapper(GenreMapper()),
-                    PageInfoMapper()
+                    MovieModelMapper(),
+                    PageInfoMapper(),
+                    MovieDetailsMapper(),
+                    KinopoiskMovieMapper(),
+                    DirectorMapper()
                 )
             ),
             GetFavoriteMoviesUseCase(

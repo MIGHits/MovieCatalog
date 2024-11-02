@@ -32,6 +32,7 @@ class MovieScreenViewModel(
         MutableStateFlow<MutableList<MovieElementModelUI>?>(
             emptyList<MovieElementModelUI>().toMutableList()
         )
+
     val movieCollection: StateFlow<MutableList<MovieElementModelUI>?> get() = _movieCollection
 
     private val _blackList =

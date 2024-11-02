@@ -3,19 +3,23 @@ package com.example.moviecatalog.presentation.view.navigationBarFragments
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.MIN_SWIPE_DISTANCE
 import com.example.moviecatalog.databinding.FeedScreenBinding
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
+import com.example.moviecatalog.presentation.view.MovieDetails.Companion.MOVIE_ID
 import com.example.moviecatalog.presentation.view_model.FeedViewModel
 import com.example.moviecatalog.presentation.view_model.FeedViewModelFactory
 import com.squareup.picasso.Picasso
@@ -24,22 +28,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
-class FeedScreen:Fragment(R.layout.feed_screen) {
-    private lateinit var binding:FeedScreenBinding
-    private lateinit var movieModel:MovieElementModelUI
+class FeedScreen : Fragment(R.layout.feed_screen) {
+    private lateinit var binding: FeedScreenBinding
+    private lateinit var movieModel: MovieElementModelUI
     private lateinit var viewModel: FeedViewModel
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-         viewModel = ViewModelProvider(this,FeedViewModelFactory())
+        viewModel = ViewModelProvider(this, FeedViewModelFactory())
             .get(FeedViewModel::class.java)
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FeedScreenBinding.bind(view)
         binding.imageSwitcher.clipToOutline = true
         super.onViewCreated(view, savedInstanceState)
+        val bundle = Bundle()
         val imageSwitcher = binding.imageSwitcher
+
+        imageSwitcher.setOnClickListener {
+            bundle.putString(MOVIE_ID, movieModel.id)
+            findNavController()
+                .navigate(R.id.action_feedScreen_to_movieDetails, bundle)
+        }
 
         subscribeMovieViewModel(viewModel)
         setMovieInfo()
@@ -47,7 +58,7 @@ class FeedScreen:Fragment(R.layout.feed_screen) {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun movieSwipe(imageSwitcher:ImageView){
+    fun movieSwipe(imageSwitcher: ImageView) {
 
         imageSwitcher.setOnTouchListener(
             View.OnTouchListener { v, event ->
@@ -78,6 +89,7 @@ class FeedScreen:Fragment(R.layout.feed_screen) {
                             )
                             .start()
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         val newX = event.rawX
                         if (newX - cardWidth < cardStart) {
@@ -87,9 +99,9 @@ class FeedScreen:Fragment(R.layout.feed_screen) {
                                 )
                                 .setDuration(0)
                                 .start()
-                            if (imageSwitcher.x < MIN_SWIPE_DISTANCE){
+                            if (imageSwitcher.x < MIN_SWIPE_DISTANCE) {
 
-                            } else{
+                            } else {
 
                             }
                         }
@@ -97,12 +109,12 @@ class FeedScreen:Fragment(R.layout.feed_screen) {
                 }
                 v.performClick()
                 return@OnTouchListener true
-        })
+            })
     }
 
-    private fun subscribeMovieViewModel(viewModel: FeedViewModel){
+    private fun subscribeMovieViewModel(viewModel: FeedViewModel) {
         this.lifecycleScope.launch {
-            viewModel.movieModel.collect{movie->
+            viewModel.movieModel.collect { movie ->
                 movieModel = movie
             }
         }
@@ -128,9 +140,9 @@ class FeedScreen:Fragment(R.layout.feed_screen) {
         }
     }
 
-    private fun isGenreFavorite(genre:String?,index:Int){
+    private fun isGenreFavorite(genre: String?, index: Int) {
         binding.apply {
-            val genres = listOf(firstGenre,secondGenre,thirdGenre)
+            val genres = listOf(firstGenre, secondGenre, thirdGenre)
             genres[index].text = genre
             genres[index].setBackgroundResource(R.drawable.genres_card_style)
         }

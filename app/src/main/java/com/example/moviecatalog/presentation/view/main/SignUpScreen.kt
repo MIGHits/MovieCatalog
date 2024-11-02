@@ -12,6 +12,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.FEMALE
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
@@ -40,19 +41,17 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SignUpScreenBinding.bind(view)
+        binding?.constraintLayout2?.clipToOutline = true
 
         setFieldsListeners()
         subscribeRegistration(viewModel)
         subscribeUIState(viewModel)
         setValidationFields(viewModel)
 
-        binding?.constraintLayout2?.clipToOutline = true
         binding?.backButton?.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, WelcomeScreen())
-                .commit()
+            view.findNavController().navigate(R.id.action_signUpScreen_to_welcomeScreen)
         }
+
         binding?.register?.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.registerUser(requireContext()).join()
