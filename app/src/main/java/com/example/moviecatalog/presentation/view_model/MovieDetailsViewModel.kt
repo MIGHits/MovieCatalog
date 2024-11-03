@@ -47,4 +47,5 @@ class MovieDetailsViewModel(
         val poster = getPoster(name)
         _movieDetails.value = _movieDetails.value.copy(directorPoster = poster)
     }
+
 }

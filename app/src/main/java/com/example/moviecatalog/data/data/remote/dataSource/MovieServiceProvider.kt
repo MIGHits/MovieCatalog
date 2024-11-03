@@ -31,7 +31,6 @@ class MovieServiceProvider() : MovieService {
 
     override suspend fun getDirector(url: String, token: String, name: String): MovieDirectorDTO {
         val result = movieServiceProvider.getDirector(name = name)
-        Log.d("Api",result.items?.first()?.posterUrl.toString())
         return result
     }
 

@@ -37,13 +37,11 @@ class MovieRepositoryImpl(
 
     override suspend fun getMovieRatings(name: String, year: Int): MovieServicesRating {
         val dtoModel = movieApi.getMovieByFilters(keyword = name, year = year)
-        Log.d("DTO", dtoModel.items?.first()?.ratingKinopoisk.toString())
         return kinopoiskMovieMapper.map(dtoModel)
     }
 
     override suspend fun getDirector(name: String): MovieDirector {
         val dtoModel = movieApi.getDirector(name = name)
-        Log.d("DTO", dtoModel.items?.first()?.posterUrl.toString())
         return movieDirectorMapper.map(dtoModel)
     }
 

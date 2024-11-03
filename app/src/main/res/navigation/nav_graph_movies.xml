@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_movies"
+    app:startDestination="@id/feedScreen">
+
+    <fragment
+        android:id="@+id/feedScreen"
+        android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.FeedScreen"
+        android:label="FeedScreen">
+        <action
+            android:id="@+id/action_feedScreen_to_movieDetails"
+            app:destination="@id/movieDetails2" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieScreen"
+        android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.MovieScreen"
+        android:label="MovieScreen">
+        <action
+            android:id="@+id/action_movieScreen_to_movieDetails"
+            app:destination="@id/movieDetails2" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileScreen"
+        android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.ProfileScreen"
+        android:label="ProfileScreen">
+        <action
+            android:id="@+id/action_profileScreen_to_movieDetails"
+            app:destination="@id/movieDetails2" />
+    </fragment>
+    <activity
+        android:id="@+id/movieDetails2"
+        android:name="com.example.moviecatalog.presentation.view.MovieDetails"
+        android:label="MovieDetails">
+        <argument android:name="MovieId" />
+    </activity>
+</navigation>

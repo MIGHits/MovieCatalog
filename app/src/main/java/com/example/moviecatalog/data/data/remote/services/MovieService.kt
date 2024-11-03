@@ -1,6 +1,5 @@
 package com.example.moviecatalog.data.data.remote.services
 
-import com.example.moviecatalog.data.data.remote.dataSource.URL.GET_MOVIES_BY_KEYWORD
 import com.example.moviecatalog.data.data.remote.dataSource.URL.GET_MOVIE_DIRECTOR
 import com.example.moviecatalog.data.data.remote.dataSource.URL.GET_MOVIE_RATINGS
 import com.example.moviecatalog.data.data.remote.dataSource.URL.KP_TOKEN

@@ -17,8 +17,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,10 +33,12 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,6 +85,9 @@ import com.example.moviecatalog.presentation.view.navigationBarFragments.Profile
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModel
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModelFactory
 import kotlinx.coroutines.launch
+import java.text.DecimalFormatSymbols
+import java.util.Locale
+import kotlin.properties.Delegates
 
 class MovieDetails : ComponentActivity() {
     private lateinit var movieId: String
@@ -113,8 +122,15 @@ class MovieDetails : ComponentActivity() {
     @Composable
     fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
         val details by remember { viewModel.movieDetails }
-        val scrollState = rememberScrollState()
+        val scrollState = rememberLazyListState()
+        var isVisible by remember { mutableStateOf(false) }
 
+        LaunchedEffect(scrollState) {
+            snapshotFlow { scrollState.firstVisibleItemIndex }
+                .collect { firstVisibleItemIndex ->
+                    isVisible = firstVisibleItemIndex > 0
+                }
+        }
 
         Box(
             modifier = Modifier
@@ -125,8 +141,11 @@ class MovieDetails : ComponentActivity() {
                 details.poster,
                 Modifier.align(Alignment.TopCenter)
             )
-            TopBar()
-            Column(
+
+            details.name?.let { TopBar(it, isVisible) }
+
+            LazyColumn(
+                state = scrollState,
                 modifier = Modifier
                     .padding(
                         top = 148.dp,
@@ -134,40 +153,55 @@ class MovieDetails : ComponentActivity() {
                         end = 24.dp,
                     )
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
             ) {
-                Spacer(Modifier.height(263.dp))
-                MovieTittle(
-                    details.name.toString(),
-                    details.tagline.toString()
-                )
-                FriendsBlock()
-                details.description?.let { MovieDescription(it) }
-                MovieRatingBlock(details.kinopoiskRating, details.imdbRating)
-                details.country?.let {
-                    MovieMainInfo(
-                        it,
-                        details.ageLimit,
-                        details.time,
-                        details.year
+                item {
+                    Spacer(Modifier.height(263.dp))
+                    MovieTittle(
+                        details.name.toString(),
+                        details.tagline.toString()
                     )
                 }
-                ProducerBlock(
-                    details.directorPoster,
-                    details.director.toString()
-                )
-                details.genres?.let { GenresBlock(it) }
-                MoneyBlock(
-                    details.budget,
-                    details.fees
-                )
-                ReviewBlock()
+                item {
+                    FriendsBlock()
+                    details.description?.let { MovieDescription(it) }
+
+                    if (details.mcRating != null) {
+
+                        val symbols = DecimalFormatSymbols(Locale.getDefault())
+                        symbols.decimalSeparator = '.'
+                        val df = java.text.DecimalFormat("#.#", symbols)
+
+                        MovieRatingBlock(
+                            df.format(details.mcRating),
+                            details.kinopoiskRating, details.imdbRating
+                        )
+                    }
+
+                    details.country?.let {
+                        MovieMainInfo(
+                            it,
+                            details.ageLimit,
+                            details.time,
+                            details.year
+                        )
+                    }
+                    ProducerBlock(
+                        details.directorPoster,
+                        details.director.toString()
+                    )
+                    details.genres?.let { GenresBlock(it) }
+                    MoneyBlock(
+                        details.budget,
+                        details.fees
+                    )
+                    ReviewBlock()
+                }
             }
         }
     }
 
     @Composable
-    fun TopBar() {
+    fun TopBar(movieTittle: String, isVisible: Boolean) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -194,13 +228,21 @@ class MovieDetails : ComponentActivity() {
             }
             Spacer(modifier = Modifier.width(16.dp))
 
-            Text(
-                text = "Название Фильма",
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 4.dp, bottom = 4.dp),
-                fontSize = 24.sp, color = Color.White
-            )
+            if (isVisible) {
+                Text(
+                    text = movieTittle,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 4.dp, bottom = 4.dp),
+                    fontSize = 24.sp, color = Color.White
+                )
+            } else {
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 4.dp, bottom = 4.dp)
+                )
+            }
 
             IconButton(
                 onClick = {},
@@ -248,7 +290,8 @@ class MovieDetails : ComponentActivity() {
                     fontSize = 36.sp,
                     lineHeight = 50.4.sp,
                     color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
                 Text(
                     text = tagline,
@@ -310,7 +353,11 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun MovieRatingBlock(kinopoiskRating: Double? = null, imdbRating: Double? = null) {
+    fun MovieRatingBlock(
+        mcRating: String? = null,
+        kinopoiskRating: Double? = null,
+        imdbRating: Double? = null
+    ) {
         Box(
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -331,7 +378,7 @@ class MovieDetails : ComponentActivity() {
                         .fillMaxWidth()
                 ) {
                     MovieRating(
-                        drawable.mc_rating_logo, 9.7,
+                        drawable.mc_rating_logo, mcRating,
                         Modifier
                             .padding()
                             .weight(1.5f)
@@ -343,7 +390,7 @@ class MovieDetails : ComponentActivity() {
                     if (kinopoiskRating != null) {
                         Spacer(Modifier.width(8.dp))
                         MovieRating(
-                            drawable.kp_rating_logo, kinopoiskRating,
+                            drawable.kp_rating_logo, kinopoiskRating.toString(),
                             Modifier
                                 .padding()
                                 .weight(1f)
@@ -356,7 +403,7 @@ class MovieDetails : ComponentActivity() {
                     }
                     if (imdbRating != null) {
                         MovieRating(
-                            drawable.imdb_rating_logo, imdbRating,
+                            drawable.imdb_rating_logo, imdbRating.toString(),
                             Modifier
                                 .padding()
                                 .weight(1f)
@@ -375,7 +422,7 @@ class MovieDetails : ComponentActivity() {
     fun MovieMainInfo(
         country: String,
         age: Int,
-        time: Int,
+        time: String,
         year: Int
     ) {
         Box(
@@ -798,7 +845,7 @@ fun BlockLabel(icon: Int, text: Int) {
 }
 
 @Composable
-fun MovieRating(logo: Int, rating: Double? = null, modifier: Modifier) {
+fun MovieRating(logo: Int, rating: String? = null, modifier: Modifier) {
     Box(modifier = modifier) {
         Row(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)) {
             Image(
@@ -879,34 +926,4 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
     }
 }
 
-
-@Composable
-fun VisibilityTrackerExample() {
-    var isVisible by remember { mutableStateOf(false) }
-
-    Box(Modifier.fillMaxSize()) {
-        Text(
-            text = "Проверка видимости",
-            modifier = Modifier
-                .padding(16.dp)
-                .onGloballyPositioned { coordinates ->
-                    val visibleRect = Rect(
-                        0f,
-                        0f,
-                        coordinates.size.width.toFloat(),
-                        coordinates.size.height.toFloat()
-                    )
-                    val parentRect = coordinates.parentLayoutCoordinates?.boundsInRoot()
-
-                    isVisible = parentRect?.intersect(visibleRect) != null
-                }
-        )
-
-        if (isVisible) {
-            Text(text = "Элемент виден")
-        } else {
-            Text(text = "Элемент не виден")
-        }
-    }
-}
 

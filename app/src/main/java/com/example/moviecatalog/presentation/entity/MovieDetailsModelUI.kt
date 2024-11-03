@@ -11,7 +11,7 @@ data class MovieDetailsModelUI(
     val country: String? = null,
     val genres: List<GenreModelUI>? = null,
     val reviews: List<ReviewModelUI>? = null,
-    val time: Int = INITIAL_INT,
+    val time: String = INITIAL_FIELD_STATE,
     val tagline: String? = null,
     val description: String? = null,
     val director: String? = null,
@@ -20,5 +20,6 @@ data class MovieDetailsModelUI(
     val ageLimit: Int = INITIAL_INT,
     val kinopoiskRating:Double? = null,
     val imdbRating:Double? = null,
+    val mcRating:Double? = null,
     val directorPoster:String? =null
 )

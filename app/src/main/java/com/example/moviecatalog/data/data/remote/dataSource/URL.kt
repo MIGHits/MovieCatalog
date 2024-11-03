@@ -13,7 +13,6 @@ object URL {
     const val GET_PROFILE:String = "api/account/profile"
     const val UPDATE_PROFILE:String = "api/account/profile"
     const val KP_TOKEN:String = "a38e7a3c-621b-4315-b84d-13135e2ef3b3"
-    const val GET_MOVIES_BY_KEYWORD:String = "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword"
     const val GET_MOVIE_RATINGS:String = "https://kinopoiskapiunofficial.tech/api/v2.2/films"
     const val GET_MOVIE_DIRECTOR:String = "https://kinopoiskapiunofficial.tech/api/v1/persons"
 }
