@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.moviecatalog"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.moviecatalog"
@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.storiesprogressview.v30) {
         exclude("com.android.support")
     }
+    implementation(libs.androidx.material3)
     implementation (libs.androidx.navigation.compose)
     implementation (libs.androidx.navigation.fragment.ktx)
     implementation (libs.androidx.navigation.ui.ktx)

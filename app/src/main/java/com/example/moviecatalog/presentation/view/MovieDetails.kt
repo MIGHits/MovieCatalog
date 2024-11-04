@@ -1,40 +1,48 @@
 package com.example.moviecatalog.presentation.view
 
-import android.credentials.CredentialDescription
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,51 +51,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavArgs
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.activity
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.fragment
-import androidx.navigation.navArgs
 import coil.compose.AsyncImage
 import com.example.moviecatalog.R
 import com.example.moviecatalog.R.drawable
+import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.presentation.entity.GenreModelUI
+import com.example.moviecatalog.presentation.entity.ReviewModelUI
 import com.example.moviecatalog.presentation.theme.backgroundColor
 import com.example.moviecatalog.presentation.theme.darkFaded
 import com.example.moviecatalog.presentation.theme.fadeoutFirst
 import com.example.moviecatalog.presentation.theme.fadeoutSecond
 import com.example.moviecatalog.presentation.theme.gradientFirst
 import com.example.moviecatalog.presentation.theme.gradientSecond
-import com.example.moviecatalog.presentation.view.navigationBarFragments.FeedScreen
-import com.example.moviecatalog.presentation.view.navigationBarFragments.MovieScreen
-import com.example.moviecatalog.presentation.view.navigationBarFragments.ProfileScreen
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModel
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModelFactory
 import kotlinx.coroutines.launch
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-import kotlin.properties.Delegates
+import kotlin.math.roundToInt
 
 class MovieDetails : ComponentActivity() {
     private lateinit var movieId: String
@@ -148,7 +143,7 @@ class MovieDetails : ComponentActivity() {
                 state = scrollState,
                 modifier = Modifier
                     .padding(
-                        top = 148.dp,
+                        top = 160.dp,
                         start = 24.dp,
                         end = 24.dp,
                     )
@@ -194,7 +189,7 @@ class MovieDetails : ComponentActivity() {
                         details.budget,
                         details.fees
                     )
-                    ReviewBlock()
+                    details.reviews?.let { ReviewBlock(it) }
                 }
             }
         }
@@ -233,8 +228,9 @@ class MovieDetails : ComponentActivity() {
                     text = movieTittle,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(top = 4.dp, bottom = 4.dp),
-                    fontSize = 24.sp, color = Color.White
+                        .padding(top = 4.dp, bottom = 4.dp)
+                        .align(Alignment.Top),
+                    fontSize = 24.sp, color = Color.White,
                 )
             } else {
                 Spacer(
@@ -320,7 +316,7 @@ class MovieDetails : ComponentActivity() {
                         drawable.profile_image,
                         drawable.profile_image
                     )
-                    LazyRow() { items(list) { item -> FriendsAvatar(item) } }
+                    LazyRow() { items(list) { item -> FriendsAvatar(item.toString()) } }
                 }
                 Text(
                     modifier = Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
@@ -573,7 +569,15 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun ReviewBlock() {
+    fun ReviewBlock(reviews: List<ReviewModelUI>) {
+        val reviewsCount = reviews.size
+        var current by remember { mutableIntStateOf(0) }
+        var reviewDialogState by remember { mutableStateOf(false) }
+
+        if (reviewDialogState) {
+            MyDialog { reviewDialogState = false }
+        }
+
         Box(
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 48.dp)
@@ -599,7 +603,13 @@ class MovieDetails : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            FriendsAvatar(drawable.profile_image)
+
+                            if (!reviews[current].isAnonymous) {
+                                FriendsAvatar(reviews[current].author.avatar.toString())
+                            } else {
+                                FriendsAvatar(INITIAL_FIELD_STATE)
+                            }
+
                             Column(
                                 modifier = Modifier
                                     .padding(
@@ -609,50 +619,23 @@ class MovieDetails : ComponentActivity() {
                                     .fillMaxWidth(0.75f)
                             ) {
                                 Text(
-                                    text = "Анонимный пользователь",
+                                    text = if (reviews[current].isAnonymous) stringResource(R.string.anonimus)
+                                    else reviews[current].author.nickName.toString(),
                                     fontSize = 12.sp,
                                     lineHeight = 14.4.sp,
                                     color = Color.White
                                 )
                                 Text(
-                                    text = "17 октября 2024",
+                                    text = reviews[current].createDateTime,
                                     fontSize = 12.sp,
                                     lineHeight = 14.4.sp,
                                     color = colorResource(R.color.GrayFaded)
                                 )
                             }
-                            Row(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(colorResource(R.color.rating9_9))
-                            ) {
-                                Icon(
-                                    painter = painterResource(drawable.review_rating_star),
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(
-                                        start = 8.dp,
-                                        top = 6.dp,
-                                        bottom = 6.dp,
-                                        end = 4.dp
-                                    )
-                                )
-                                Text(
-                                    text = "10",
-                                    fontSize = 16.sp,
-                                    lineHeight = 20.sp,
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .padding(
-                                            top = 4.dp,
-                                            bottom = 4.dp,
-                                            end = 8.dp
-                                        )
-                                )
-                            }
+                            ReviewRating(reviews[current].rating)
                         }
                         Text(
-                            "Если у вас взорвался мозг от «Тьмы» и вам это понравилось, то не переживайте. Новый сериал Барана бо Одара «1899» получился не хуже предшественника",
+                            text = reviews[current].reviewText.toString(),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             color = Color.White,
@@ -674,7 +657,7 @@ class MovieDetails : ComponentActivity() {
                         .fillMaxWidth()
                 ) {
                     TextButton(
-                        onClick = {},
+                        onClick = { reviewDialogState = true },
                         modifier = Modifier
                             .padding(end = 24.dp)
                             .clip(RoundedCornerShape(8.dp))
@@ -697,31 +680,41 @@ class MovieDetails : ComponentActivity() {
                         )
                     }
                     IconButton(
-                        onClick = {},
+                        onClick = { current-- },
                         modifier = Modifier
                             .padding(end = 4.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(color = darkFaded)
+                            .background(
+                                if (current != 0) colorResource(R.color.screenBackgroundDark)
+                                else darkFaded
+                            ),
+                        enabled = current != 0
 
                     ) {
                         Icon(
                             painter = painterResource(id = drawable.back_icon),
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = if (current != 0) Color.White
+                            else colorResource(R.color.TextGray),
                             modifier = Modifier.padding(8.dp)
                         )
                     }
                     IconButton(
-                        onClick = {},
+                        onClick = { current++ },
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(color = colorResource(R.color.screenBackgroundDark))
+                            .background(
+                                if (current != reviewsCount - 1) colorResource(R.color.screenBackgroundDark)
+                                else darkFaded
+                            ),
+                        enabled = current != reviewsCount - 1
 
                     ) {
                         Icon(
                             painter = painterResource(id = drawable.forward_ic),
                             contentDescription = null,
-                            tint = Color.White,
+                            tint = if (current != reviewsCount - 1) Color.White
+                            else colorResource(R.color.TextGray),
                             modifier = Modifier.padding(8.dp)
                         )
                     }
@@ -732,14 +725,59 @@ class MovieDetails : ComponentActivity() {
     }
 }
 
+@Composable
+fun ReviewRating(rating: Int) {
+    var color = colorResource(R.color.white)
+    when (rating) {
+        in 0..<1 -> color = colorResource(R.color.GrayFaded)
+        in 1..<2 -> color = colorResource(R.color.rating1_0)
+        in 2..<3 -> color = colorResource(R.color.rating2_3)
+        in 3..<4 -> color = colorResource(R.color.rating3_6)
+        in 4..<6 -> color = colorResource(R.color.rating4_0)
+        in 6..<7 -> color = colorResource(R.color.rating6_0)
+        in 7..<8 -> color = colorResource(R.color.rating7_4)
+        in 8..<9 -> color = colorResource(R.color.rating8_5)
+        in 9..10 -> color = colorResource(R.color.rating9_9)
+    }
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(color)
+    ) {
+        Icon(
+            painter = painterResource(drawable.review_rating_star),
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.padding(
+                start = 8.dp,
+                top = 6.dp,
+                bottom = 6.dp,
+                end = 4.dp
+            )
+        )
+        Text(
+            text = rating.toString(),
+            fontSize = 16.sp,
+            lineHeight = 20.sp,
+            color = Color.White,
+            modifier = Modifier
+                .padding(
+                    top = 4.dp,
+                    bottom = 4.dp,
+                    end = 8.dp
+                )
+        )
+    }
+}
 
 @Composable
 fun Gradient(gradientColors: List<Color>): Brush {
 
     val brush = Brush.linearGradient(
         colors = gradientColors,
-        start = Offset(0f, 0f),
-        end = Offset(0f, 1000f)
+        start = Offset.Zero,
+        end = Offset.Infinite
     )
 
     return brush
@@ -874,17 +912,16 @@ fun MovieRating(logo: Int, rating: String? = null, modifier: Modifier) {
 
 
 @Composable
-fun FriendsAvatar(avatar: Int) {
-    Image(
-        painter = painterResource(
-            id = avatar
-        ),
+fun FriendsAvatar(userAvatar: String) {
+    val guestAvatar = drawable.profile_image
+    AsyncImage(
+        model = userAvatar.ifEmpty { guestAvatar },
         contentDescription = null,
         modifier = Modifier
             .width(32.dp)
             .height(32.dp)
             .clip(CircleShape),
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Crop
     )
 }
 
@@ -894,7 +931,7 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(464.dp)
+            .fillMaxHeight(0.53f)
             .clip(
                 RoundedCornerShape(
                     bottomStart = 32.dp,
@@ -922,8 +959,204 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
                 )
                 .align(Alignment.BottomCenter)
         )
-
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDialog(onDismiss: () -> Unit) {
+    var sliderPos by remember { mutableFloatStateOf(5f) }
+    var textField by remember { mutableStateOf("") }
+    var anonimusCheck by remember { mutableStateOf(false) }
+    AlertDialog(
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
+        ),
+        modifier = Modifier
+            .padding(start = 24.dp, end = 24.dp)
+            .clip(RoundedCornerShape(28.dp)),
+        backgroundColor = colorResource(R.color.screenBackgroundDark),
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Добавить отзыв",
+                fontSize = 20.sp,
+                lineHeight = 24.sp,
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+        },
+        text = {
+            Column {
 
+                Text(
+                    text = "Оценка",
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = colorResource(R.color.TextGray),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp)
+                )
+
+                BoxWithConstraints() {
+
+
+                    val offset = getSliderOffset(
+                        value = sliderPos,
+                        valueRange = 0f..10f,
+                        boxWidth = maxWidth,
+                        labelWidth = 24.dp + 8.dp
+                    )
+
+                    if (sliderPos >= 0) {
+                        SliderLabel(
+                            label = sliderPos.roundToInt().toString(),
+                            minWidth = 24.dp,
+                            modifier = Modifier
+                                .padding(start = offset)
+                        )
+                    }
+                }
+
+                androidx.compose.material3.Slider(
+                    value = sliderPos,
+                    onValueChange = { sliderPos = it },
+                    valueRange = 0f..10f,
+                    steps = 9,
+                    colors = androidx.compose.material3.SliderDefaults.colors(
+                        activeTickColor = Color.White,
+                        inactiveTickColor = colorResource(R.color.Accent),
+                        activeTrackColor = colorResource(R.color.Accent),
+                        inactiveTrackColor = darkFaded
+                    ),
+                    thumb = {
+                        Icon(
+                            painter = painterResource(drawable.thumb),
+                            contentDescription = null,
+                            tint = colorResource(R.color.Accent)
+                        )
+                    }
+                )
+                TextField(
+                    value = textField,
+                    onValueChange = { textField = it },
+                    placeholder = {
+                        Column {
+                            Text(
+                                stringResource(R.string.reviewText),
+                                color = colorResource(R.color.GrayFaded),
+                                fontSize = 14.sp,
+                                lineHeight = 20.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                            Spacer(Modifier.height(84.dp))
+                        }
+                    },
+                    colors = androidx.compose.material3.TextFieldDefaults.colors(
+                        focusedContainerColor = colorResource(R.color.DarkFaded),
+                        unfocusedContainerColor = colorResource(R.color.DarkFaded),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        cursorColor = colorResource(R.color.Accent)
+                    ),
+                    modifier = Modifier
+                        .padding(
+                            top = 8.dp
+                        )
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(darkFaded)
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(end = 24.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.anonReview),
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        color = colorResource(R.color.GrayFaded),
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                    Spacer(Modifier.width(160.dp))
+                    Switch(
+                        checked = anonimusCheck,
+                        onCheckedChange = { anonimusCheck = it },
+                        colors = androidx.compose.material3.SwitchDefaults.colors(
+                            checkedTrackColor = colorResource(R.color.Accent),
+                            uncheckedTrackColor = colorResource(R.color.DarkFaded),
+                            uncheckedBorderColor = Color.Transparent
+                        )
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .offset((-12).dp, (-12).dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(
+                        Gradient(
+                            listOf(
+                                gradientFirst,
+                                gradientSecond
+                            )
+                        )
+                    )
+                    .padding(start = 12.dp, end = 12.dp)
+            ) {
+                Text(
+                    stringResource(R.string.sendReview),
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding()
+                )
+            }
+        }
+    )
+}
+
+private fun getSliderOffset(
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    boxWidth: Dp,
+    labelWidth: Dp
+): Dp {
+
+    val coerced = value.coerceIn(valueRange.start, valueRange.endInclusive)
+    val positionFraction = calcFraction(valueRange.start, valueRange.endInclusive, coerced)
+
+    return (boxWidth - labelWidth) * positionFraction
+}
+
+private fun calcFraction(a: Float, b: Float, pos: Float) =
+    (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)
+
+@Composable
+fun SliderLabel(label: String, minWidth: Dp, modifier: Modifier = Modifier) {
+    Text(
+        label,
+        color = Color.White,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .background(
+                color = darkFaded,
+                shape = CircleShape
+            )
+            .padding(4.dp)
+            .defaultMinSize(minWidth = minWidth)
+    )
+}

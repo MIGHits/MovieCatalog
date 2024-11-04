@@ -50,5 +50,9 @@
     <string name="budget">Бюджет</string>
     <string name="bank">Сборы в мире</string>
     <string name="reviews">Отзывы</string>
+    <string name="anonimus">Анонимный пользователь</string>
+    <string name="reviewText">Текст отзыва</string>
+    <string name="anonReview">Анонимный отзыв</string>
+    <string name="sendReview">Отправить</string>
 
 </resources>
