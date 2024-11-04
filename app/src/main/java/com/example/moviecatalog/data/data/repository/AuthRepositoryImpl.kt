@@ -13,9 +13,8 @@ import com.example.moviecatalog.domain.repository.AuthRepository
 class AuthRepositoryImpl(
     private val tokenStorage: TokenStorage,
     private val authApi: AuthService,
-    private val userMapper: UserMapper = UserMapper(),
-    private val loginMapper: LoginCredentialsMapper =
-        LoginCredentialsMapper()
+    private val userMapper: UserMapper,
+    private val loginMapper: LoginCredentialsMapper
 ) : AuthRepository {
 
     override suspend fun register(user: UserRegisterModel) {

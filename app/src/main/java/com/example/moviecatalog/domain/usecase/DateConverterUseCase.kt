@@ -12,7 +12,11 @@ class DateConverterUseCase() {
     )
     private val isoDateFormat = SimpleDateFormat(
         "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US
-    );
+    )
+
+    private val isoDateFormatReview = SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss.SSSSSSS'Z'", Locale.US
+    )
 
     fun convertSelectedToUI(date: android.icu.util.Calendar): String {
         return uiDateFormat.format(date.time)
@@ -23,7 +27,7 @@ class DateConverterUseCase() {
         return isoDateFormat.format(parsedDate as Date)
     }
 
-    fun convertRemoteToUI(date:String):String {
+    fun convertRemoteToUI(date: String): String {
         val parsedDate = isoDateFormat.parse(date)
         return uiDateFormat.format(parsedDate as Date)
     }
@@ -32,6 +36,11 @@ class DateConverterUseCase() {
         val currentTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("HH")
         return currentTime.format(formatter)
+    }
+
+    fun convertReviewDate(date: String): String {
+        val parsedDate = isoDateFormatReview.parse(date)
+        return uiDateFormat.format(parsedDate as Date)
     }
 
 }

@@ -1,9 +1,9 @@
 package com.example.moviecatalog.presentation.view
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,16 +28,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,16 +48,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import coil.compose.AsyncImage
@@ -71,14 +68,17 @@ import com.example.moviecatalog.R.drawable
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.presentation.entity.GenreModelUI
 import com.example.moviecatalog.presentation.entity.ReviewModelUI
+import com.example.moviecatalog.presentation.entity.UserReviewUI
 import com.example.moviecatalog.presentation.theme.backgroundColor
 import com.example.moviecatalog.presentation.theme.darkFaded
 import com.example.moviecatalog.presentation.theme.fadeoutFirst
 import com.example.moviecatalog.presentation.theme.fadeoutSecond
 import com.example.moviecatalog.presentation.theme.gradientFirst
 import com.example.moviecatalog.presentation.theme.gradientSecond
+import com.example.moviecatalog.presentation.view.MainActivity.Companion.addKeybordListener
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModel
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModelFactory
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -89,6 +89,12 @@ class MovieDetails : ComponentActivity() {
     private lateinit var viewModel: MovieDetailsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+            controller.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
 
         movieId = intent.extras?.getString(MOVIE_ID).toString()
         viewModel = ViewModelProvider(
@@ -98,6 +104,7 @@ class MovieDetails : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.getDetails(movieId).join()
+            viewModel.getUserData().join()
         }
 
         setContent {
@@ -117,11 +124,12 @@ class MovieDetails : ComponentActivity() {
     @Composable
     fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
         val details by remember { viewModel.movieDetails }
+        val user by remember { viewModel.userProfile }
         val scrollState = rememberLazyListState()
         var isVisible by remember { mutableStateOf(false) }
-
         LaunchedEffect(scrollState) {
             snapshotFlow { scrollState.firstVisibleItemIndex }
+                .distinctUntilChanged()
                 .collect { firstVisibleItemIndex ->
                     isVisible = firstVisibleItemIndex > 0
                 }
@@ -134,7 +142,8 @@ class MovieDetails : ComponentActivity() {
         ) {
             MovieImage(
                 details.poster,
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
+                isVisible
             )
 
             details.name?.let { TopBar(it, isVisible) }
@@ -143,7 +152,7 @@ class MovieDetails : ComponentActivity() {
                 state = scrollState,
                 modifier = Modifier
                     .padding(
-                        top = 160.dp,
+                        top = 148.dp,
                         start = 24.dp,
                         end = 24.dp,
                     )
@@ -189,7 +198,7 @@ class MovieDetails : ComponentActivity() {
                         details.budget,
                         details.fees
                     )
-                    details.reviews?.let { ReviewBlock(it) }
+                    details.reviews?.let { ReviewBlock(it, details.id, user.id) }
                 }
             }
         }
@@ -227,10 +236,12 @@ class MovieDetails : ComponentActivity() {
                 Text(
                     text = movieTittle,
                     modifier = Modifier
+                        .offset(y = (-4).dp)
                         .weight(1f)
-                        .padding(top = 4.dp, bottom = 4.dp)
                         .align(Alignment.Top),
                     fontSize = 24.sp, color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             } else {
                 Spacer(
@@ -269,7 +280,7 @@ class MovieDetails : ComponentActivity() {
                         listOf(
                             gradientFirst,
                             gradientSecond
-                        )
+                        ),
                     )
                 )
         ) {
@@ -569,13 +580,44 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun ReviewBlock(reviews: List<ReviewModelUI>) {
+    fun ReviewBlock(reviews: List<ReviewModelUI>, movieId: String, userId: String) {
         val reviewsCount = reviews.size
+        var userReview by remember {
+            mutableStateOf(
+                UserReviewUI(
+                    INITIAL_FIELD_STATE,
+                    -1,
+                    false
+                )
+            )
+        }
         var current by remember { mutableIntStateOf(0) }
         var reviewDialogState by remember { mutableStateOf(false) }
+        var userSelfReview by remember { mutableStateOf(false) }
+
+        val handleAccept: (UserReviewUI) -> Unit = { review ->
+            userReview = review
+            reviewDialogState = false
+        }
+
+        if (reviews[current].author.userId == userId) {
+            userSelfReview = true
+        } else {
+            userSelfReview = false
+        }
 
         if (reviewDialogState) {
-            MyDialog { reviewDialogState = false }
+            MyDialog({ reviewDialogState = false }, { userReview ->
+                handleAccept(userReview)
+                if (!userSelfReview) {
+                    viewModel.addReview(movieId, userReview)
+                } else {
+                    viewModel.editReview(movieId, reviews[current].id, userReview)
+                }
+            },
+                userSelfReview,
+                reviews[current]
+            )
         }
 
         Box(
@@ -604,7 +646,9 @@ class MovieDetails : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            if (!reviews[current].isAnonymous) {
+                            if (!reviews[current].isAnonymous ||
+                                reviews[current].author.userId == userId
+                            ) {
                                 FriendsAvatar(reviews[current].author.avatar.toString())
                             } else {
                                 FriendsAvatar(INITIAL_FIELD_STATE)
@@ -619,8 +663,13 @@ class MovieDetails : ComponentActivity() {
                                     .fillMaxWidth(0.75f)
                             ) {
                                 Text(
-                                    text = if (reviews[current].isAnonymous) stringResource(R.string.anonimus)
-                                    else reviews[current].author.nickName.toString(),
+                                    text = if (reviews[current].isAnonymous
+                                        && reviews[current].author.userId != userId
+                                    ) {
+                                        stringResource(
+                                            R.string.anonimus
+                                        )
+                                    } else reviews[current].author.nickName.toString(),
                                     fontSize = 12.sp,
                                     lineHeight = 14.4.sp,
                                     color = Color.White
@@ -659,26 +708,53 @@ class MovieDetails : ComponentActivity() {
                     TextButton(
                         onClick = { reviewDialogState = true },
                         modifier = Modifier
-                            .padding(end = 24.dp)
+                            .padding(end = if (!userSelfReview) 24.dp else 18.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .background(
                                 Gradient(
                                     listOf(
                                         gradientFirst,
                                         gradientSecond
-                                    )
+                                    ),
                                 )
                             )
                             .weight(3f)
                     ) {
                         Text(
-                            text = "Добавить отзыв",
+                            text = if (!userSelfReview) stringResource(R.string.addReview)
+                            else stringResource(
+                                R.string.editReview
+                            ),
                             fontSize = 14.sp,
                             lineHeight = 20.sp,
                             textAlign = TextAlign.Center,
                             color = Color.White
                         )
                     }
+
+                    if (userSelfReview) {
+                        IconButton(
+                            onClick = { viewModel.deleteReview(movieId, reviews[current].id) },
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    if (current != 0) colorResource(R.color.screenBackgroundDark)
+                                    else darkFaded
+                                ),
+                            enabled = current != 0
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = drawable.bin),
+                                contentDescription = null,
+                                tint = if (current != 0) Color.White
+                                else colorResource(R.color.TextGray),
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
+
                     IconButton(
                         onClick = { current-- },
                         modifier = Modifier
@@ -772,14 +848,25 @@ fun ReviewRating(rating: Int) {
 }
 
 @Composable
-fun Gradient(gradientColors: List<Color>): Brush {
+fun Gradient(
+    gradientColors: List<Color>,
+    vertical: Boolean = false
+): Brush {
 
-    val brush = Brush.linearGradient(
-        colors = gradientColors,
-        start = Offset.Zero,
-        end = Offset.Infinite
-    )
-
+    var brush: Brush
+    if (vertical) {
+        brush = Brush.verticalGradient(
+            colors = gradientColors,
+            endY = 400f,
+            startY = 0f
+        )
+    } else {
+        brush = Brush.linearGradient(
+            colors = gradientColors,
+            start = Offset.Zero,
+            end = Offset.Infinite
+        )
+    }
     return brush
 }
 
@@ -789,7 +876,7 @@ fun Genre(name: String, isFavorite: Boolean) {
         listOf(
             gradientFirst,
             gradientSecond
-        )
+        ),
     )
 
 
@@ -926,7 +1013,7 @@ fun FriendsAvatar(userAvatar: String) {
 }
 
 @Composable
-fun MovieImage(url: String? = null, modifier: Modifier) {
+fun MovieImage(url: String? = null, modifier: Modifier, isVisible: Boolean) {
 
     Box(
         modifier = modifier
@@ -945,6 +1032,23 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
+        if (isVisible) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.345f)
+                    .background(
+                        Gradient(
+                            listOf(
+                                fadeoutSecond,
+                                fadeoutFirst
+                            ),
+                            vertical = true
+                        )
+                    )
+                    .align(Alignment.TopCenter)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -954,7 +1058,8 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
                         listOf(
                             fadeoutFirst,
                             fadeoutSecond
-                        )
+                        ),
+                        vertical = true
                     )
                 )
                 .align(Alignment.BottomCenter)
@@ -964,10 +1069,28 @@ fun MovieImage(url: String? = null, modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDialog(onDismiss: () -> Unit) {
-    var sliderPos by remember { mutableFloatStateOf(5f) }
-    var textField by remember { mutableStateOf("") }
-    var anonimusCheck by remember { mutableStateOf(false) }
+fun MyDialog(
+    onDismiss: () -> Unit,
+    onAccept: (UserReviewUI) -> Unit,
+    usersReview: Boolean,
+    review: ReviewModelUI
+) {
+    var sliderPos by remember {
+        mutableFloatStateOf(
+            if (usersReview) review.rating.toFloat()
+            else 5f
+        )
+    }
+    var textField by remember {
+        mutableStateOf(
+            if (!usersReview) INITIAL_FIELD_STATE else
+                review.reviewText
+        )
+    }
+    var anonimusCheck by remember {
+        mutableStateOf(if (usersReview) review.isAnonymous else false)
+    }
+
     AlertDialog(
         properties = DialogProperties(
             dismissOnBackPress = true,
@@ -981,7 +1104,8 @@ fun MyDialog(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Добавить отзыв",
+                text = if (usersReview) stringResource(R.string.addNewReview)
+                else stringResource(R.string.EditReview),
                 fontSize = 20.sp,
                 lineHeight = 24.sp,
                 color = Color.White,
@@ -1003,7 +1127,7 @@ fun MyDialog(onDismiss: () -> Unit) {
                         .padding(bottom = 4.dp)
                 )
 
-                BoxWithConstraints() {
+                BoxWithConstraints {
 
 
                     val offset = getSliderOffset(
@@ -1043,7 +1167,7 @@ fun MyDialog(onDismiss: () -> Unit) {
                     }
                 )
                 TextField(
-                    value = textField,
+                    value = textField.toString(),
                     onValueChange = { textField = it },
                     placeholder = {
                         Column {
@@ -1101,7 +1225,15 @@ fun MyDialog(onDismiss: () -> Unit) {
         },
         confirmButton = {
             TextButton(
-                onClick = onDismiss,
+                onClick = {
+                    onAccept(
+                        UserReviewUI(
+                            textField.toString(),
+                            sliderPos.roundToInt(),
+                            anonimusCheck
+                        )
+                    )
+                },
                 modifier = Modifier
                     .offset((-12).dp, (-12).dp)
                     .clip(RoundedCornerShape(8.dp))
@@ -1110,7 +1242,7 @@ fun MyDialog(onDismiss: () -> Unit) {
                             listOf(
                                 gradientFirst,
                                 gradientSecond
-                            )
+                            ),
                         )
                     )
                     .padding(start = 12.dp, end = 12.dp)

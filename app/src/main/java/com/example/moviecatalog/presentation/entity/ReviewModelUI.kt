@@ -5,6 +5,6 @@ data class ReviewModelUI (
     val rating: Int,
     val reviewText: String?,
     val isAnonymous: Boolean,
-    val createDateTime: String,
+    var createDateTime: String,
     val author: UserShortModelUI
 )

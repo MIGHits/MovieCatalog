@@ -17,8 +17,8 @@ class ProfileViewModel(
     private val getUserProfileDataUseCase: GetUserProfileDataUseCase,
     private val updateUserProfileAvatar: UpdateUserProfileAvatar,
     private val logoutUseCase: LogoutUseCase,
-    private val dateConverter: DateConverterUseCase = DateConverterUseCase(),
-    private val profileMapper: ProfileUIMapper = ProfileUIMapper()
+    private val dateConverter: DateConverterUseCase,
+    private val profileMapper: ProfileUIMapper
 ) : ViewModel() {
     private val _profile = MutableStateFlow(ProfileModelUI())
     val profile: StateFlow<ProfileModelUI> get() = _profile

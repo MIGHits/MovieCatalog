@@ -3,6 +3,8 @@ package com.example.moviecatalog.presentation.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.moviecatalog.data.data.mappers.LoginCredentialsMapper
+import com.example.moviecatalog.data.data.mappers.UserMapper
 import com.example.moviecatalog.data.data.remote.dataSource.AuthServiceProvider
 import com.example.moviecatalog.data.data.repository.AuthRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
@@ -28,7 +30,9 @@ class RegistrationViewModelFactory : ViewModelProvider.Factory {
             RegisterUseCase(
                 AuthRepositoryImpl(
                     PrefsTokenStorage,
-                    AuthServiceProvider()
+                    AuthServiceProvider(),
+                    UserMapper(),
+                    LoginCredentialsMapper()
                 )
             )
         ) as T

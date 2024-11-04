@@ -12,8 +12,8 @@ import com.example.moviecatalog.domain.repository.UserRepository
 class UserRepositoryImpl(
     private val tokenStorage: TokenStorage,
     private val userApi: UserService,
-    private val profileMapper: ProfileMapper = ProfileMapper(),
-    private val profileDTOMapper: ProfileDTOMapper = ProfileDTOMapper()
+    private val profileMapper: ProfileMapper,
+    private val profileDTOMapper: ProfileDTOMapper
 ) : UserRepository {
     override suspend fun getProfile(): ProfileModel {
         return profileMapper.map(userApi.getUserProfile(tokenStorage.getToken().token))

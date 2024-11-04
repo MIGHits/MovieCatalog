@@ -54,5 +54,9 @@
     <string name="reviewText">Текст отзыва</string>
     <string name="anonReview">Анонимный отзыв</string>
     <string name="sendReview">Отправить</string>
+    <string name="addReview">Добавить отзыв</string>
+    <string name="editReview">Изменить отзыв</string>
+    <string name="addNewReview">Добавить отзыв</string>
+    <string name="EditReview">Изменить отзыв</string>
 
 </resources>
