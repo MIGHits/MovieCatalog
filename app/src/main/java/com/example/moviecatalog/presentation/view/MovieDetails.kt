@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -58,7 +60,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -75,9 +76,9 @@ import com.example.moviecatalog.presentation.theme.fadeoutFirst
 import com.example.moviecatalog.presentation.theme.fadeoutSecond
 import com.example.moviecatalog.presentation.theme.gradientFirst
 import com.example.moviecatalog.presentation.theme.gradientSecond
-import com.example.moviecatalog.presentation.view.MainActivity.Companion.addKeybordListener
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModel
 import com.example.moviecatalog.presentation.view_model.MovieDetailsViewModelFactory
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.text.DecimalFormatSymbols
@@ -103,8 +104,11 @@ class MovieDetails : ComponentActivity() {
         ).get(MovieDetailsViewModel::class.java)
 
         lifecycleScope.launch {
-            viewModel.getDetails(movieId).join()
             viewModel.getUserData().join()
+            viewModel.addUser().join()
+            viewModel.getUser().join()
+            viewModel.getFavoriteGenres().join()
+            viewModel.getDetails(movieId).join()
         }
 
         setContent {
@@ -120,13 +124,15 @@ class MovieDetails : ComponentActivity() {
         finish()
     }
 
-
     @Composable
     fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
         val details by remember { viewModel.movieDetails }
         val user by remember { viewModel.userProfile }
+        val users by remember { viewModel.users }
+        val favorites = viewModel.favorites?.collectAsState(emptyList())
         val scrollState = rememberLazyListState()
         var isVisible by remember { mutableStateOf(false) }
+
         LaunchedEffect(scrollState) {
             snapshotFlow { scrollState.firstVisibleItemIndex }
                 .distinctUntilChanged()
@@ -193,7 +199,7 @@ class MovieDetails : ComponentActivity() {
                         details.directorPoster,
                         details.director.toString()
                     )
-                    details.genres?.let { GenresBlock(it) }
+                    details.genres?.let { GenresBlock(it, favorites?.value ?: emptyList()) }
                     MoneyBlock(
                         details.budget,
                         details.fees
@@ -327,7 +333,7 @@ class MovieDetails : ComponentActivity() {
                         drawable.profile_image,
                         drawable.profile_image
                     )
-                    LazyRow() { items(list) { item -> FriendsAvatar(item.toString()) } }
+                    LazyRow() { items(list) { item -> FriendsAvatar(item.toString(), null) } }
                 }
                 Text(
                     modifier = Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
@@ -522,7 +528,7 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun GenresBlock(genres: List<GenreModelUI>) {
+    fun GenresBlock(genres: List<GenreModelUI>, favorites: List<GenreModelUI>) {
         Box(
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -542,7 +548,7 @@ class MovieDetails : ComponentActivity() {
                 ) {
                     LazyRow(modifier = Modifier.fillMaxWidth()) {
                         items(genres) { item ->
-                            item.name?.let { Genre(it, false) }
+                            Genre(item, favorites.contains(item), viewModel)
                         }
                     }
                 }
@@ -649,9 +655,12 @@ class MovieDetails : ComponentActivity() {
                             if (!reviews[current].isAnonymous ||
                                 reviews[current].author.userId == userId
                             ) {
-                                FriendsAvatar(reviews[current].author.avatar.toString())
+                                FriendsAvatar(
+                                    reviews[current].author.avatar.toString(),
+                                    null
+                                )
                             } else {
-                                FriendsAvatar(INITIAL_FIELD_STATE)
+                                FriendsAvatar(INITIAL_FIELD_STATE, null)
                             }
 
                             Column(
@@ -871,7 +880,7 @@ fun Gradient(
 }
 
 @Composable
-fun Genre(name: String, isFavorite: Boolean) {
+fun Genre(genre: GenreModelUI, isFavorite: Boolean, viewModel: MovieDetailsViewModel) {
     val gradient = Gradient(
         listOf(
             gradientFirst,
@@ -882,7 +891,7 @@ fun Genre(name: String, isFavorite: Boolean) {
 
     if (isFavorite) {
         Text(
-            text = name,
+            text = genre.name.toString(),
             fontSize = 16.sp,
             lineHeight = 20.sp,
             color = Color.White,
@@ -896,11 +905,13 @@ fun Genre(name: String, isFavorite: Boolean) {
                     bottom = 8.dp,
                     end = 12.dp
                 )
-
+                .clickable {
+                    viewModel.deleteFavoritegenre(genre.id)
+                }
         )
     } else {
         Text(
-            text = name,
+            text = genre.name.toString(),
             fontSize = 16.sp,
             lineHeight = 20.sp,
             color = Color.White,
@@ -914,6 +925,9 @@ fun Genre(name: String, isFavorite: Boolean) {
                     bottom = 8.dp,
                     end = 12.dp
                 )
+                .clickable {
+                    viewModel.addFavoriteGenre(genre)
+                }
         )
     }
 }
@@ -999,7 +1013,7 @@ fun MovieRating(logo: Int, rating: String? = null, modifier: Modifier) {
 
 
 @Composable
-fun FriendsAvatar(userAvatar: String) {
+fun FriendsAvatar(userAvatar: String, addFriend: Job?) {
     val guestAvatar = drawable.profile_image
     AsyncImage(
         model = userAvatar.ifEmpty { guestAvatar },
@@ -1007,7 +1021,8 @@ fun FriendsAvatar(userAvatar: String) {
         modifier = Modifier
             .width(32.dp)
             .height(32.dp)
-            .clip(CircleShape),
+            .clip(CircleShape)
+            .clickable { },
         contentScale = ContentScale.Crop
     )
 }

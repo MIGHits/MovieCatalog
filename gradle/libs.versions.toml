@@ -22,8 +22,6 @@ material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
 retrofit = "2.9.0"
-room = "2.6.1"
-ksp = "2.0.0-1.0.22"
 supergradienttextviewVersion = "1.1"
 uiGraphicsAndroid = "1.7.4"
 annotation = "1.9.1"
@@ -58,9 +56,6 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-kotlinx-serialization-converter" }
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
-ksp-symbol-processing = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 squareup-picasso = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 storiesprogressview-v30 = { module = "com.github.shts:StoriesProgressView", version.ref = "githubStoriesprogressview" }
 androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
@@ -72,5 +67,4 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

@@ -2,6 +2,8 @@ package com.example.moviecatalog.presentation.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.moviecatalog.data.data.mappers.BanedMoviesMapper
+import com.example.moviecatalog.data.data.mappers.DbGenresToDomain
 import com.example.moviecatalog.data.data.mappers.DirectorMapper
 import com.example.moviecatalog.data.data.mappers.GenreMapper
 import com.example.moviecatalog.data.data.mappers.KinopoiskMovieMapper
@@ -11,23 +13,32 @@ import com.example.moviecatalog.data.data.mappers.PageInfoMapper
 import com.example.moviecatalog.data.data.mappers.ProfileDTOMapper
 import com.example.moviecatalog.data.data.mappers.ProfileMapper
 import com.example.moviecatalog.data.data.mappers.UserReviewMapper
+import com.example.moviecatalog.data.data.mappers.DbFriendsMapper
+import com.example.moviecatalog.data.data.mappers.DbUserMapper
 import com.example.moviecatalog.data.data.remote.dataSource.MovieServiceProvider
 import com.example.moviecatalog.data.data.remote.dataSource.ReviewServiceProvider
 import com.example.moviecatalog.data.data.remote.dataSource.UserServiceProvider
+import com.example.moviecatalog.data.data.repository.DatabaseRepositoryImpl
 import com.example.moviecatalog.data.data.repository.MovieRepositoryImpl
 import com.example.moviecatalog.data.data.repository.ReviewRepositoryImpl
 import com.example.moviecatalog.data.data.repository.UserRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
+import com.example.moviecatalog.domain.usecase.AddFavoritegenreUseCase
 import com.example.moviecatalog.domain.usecase.AddReviewUseCase
+import com.example.moviecatalog.domain.usecase.AddUserDbUseCase
 import com.example.moviecatalog.domain.usecase.DateConverterUseCase
+import com.example.moviecatalog.domain.usecase.DeleteFavoriteGenreUseCase
 import com.example.moviecatalog.domain.usecase.DeleteReviewUseCase
 import com.example.moviecatalog.domain.usecase.EditReviewUseCase
 import com.example.moviecatalog.domain.usecase.GetDirectorPosterUseCase
+import com.example.moviecatalog.domain.usecase.GetFavoriteGenresUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieDetailsUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieRatingsUseCase
+import com.example.moviecatalog.domain.usecase.GetUserDbUseCase
 import com.example.moviecatalog.domain.usecase.GetUserProfileDataUseCase
 import com.example.moviecatalog.presentation.mappers.MovieDetailsMapperUI
 import com.example.moviecatalog.presentation.mappers.ProfileUIMapper
+import com.example.moviecatalog.presentation.mappers.UserMapper
 
 class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -91,7 +102,49 @@ class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
                 )
             ),
             ProfileUIMapper(),
-            DateConverterUseCase()
+            DateConverterUseCase(),
+            com.example.moviecatalog.presentation.mappers.GenreMapper(),
+            UserMapper(),
+            AddUserDbUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            ),
+            GetUserDbUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            ),
+            AddFavoritegenreUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            ),
+            GetFavoriteGenresUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            ),
+            DeleteFavoriteGenreUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            )
 
         ) as T
     }

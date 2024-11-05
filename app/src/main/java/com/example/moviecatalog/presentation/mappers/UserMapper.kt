@@ -12,4 +12,16 @@ class UserMapper {
             avatar = user.avatar
         )
     }
+
+    fun reverseMap(user: UserShortModelUI): UserShortModel {
+        return UserShortModel(
+            userId = user.userId,
+            nickName = user.nickName,
+            avatar = user.avatar
+        )
+    }
+
+    fun dbUsers(list: List<UserShortModel>): List<UserShortModelUI> {
+        return list.map { map(it) }
+    }
 }

@@ -15,7 +15,7 @@ object URL {
     const val ADD_REVIEW:String = "api/movie/{movieId}/review/add"
     const val EDIT_REVIEW:String = "api/movie/{movieId}/review/{id}/edit"
     const val DELETE_REVIEW:String = "api/movie/{movieId}/review/{id}/delete"
-    const val KP_TOKEN:String = "a38e7a3c-621b-4315-b84d-13135e2ef3b3"
+    const val KP_TOKEN:String = "3e54fe5f-66b2-48cf-9717-927965cfa42e"
     const val GET_MOVIE_RATINGS:String = "https://kinopoiskapiunofficial.tech/api/v2.2/films"
     const val GET_MOVIE_DIRECTOR:String = "https://kinopoiskapiunofficial.tech/api/v1/persons"
 }

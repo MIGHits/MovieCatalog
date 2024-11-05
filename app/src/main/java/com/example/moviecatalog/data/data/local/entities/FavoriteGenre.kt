@@ -4,8 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "user_friends",
+@Entity(tableName = "favorite_genres",
     foreignKeys = [ForeignKey(
         entity = User::class,
         parentColumns = ["id"],
@@ -13,9 +12,8 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Friends(
-    val userId: String,
-    val nickname: String,
-    @PrimaryKey val id: String,
-    val avatar: String
+data class FavoriteGenre(
+    val userId:String,
+    @PrimaryKey val id:String,
+    val name:String
 )

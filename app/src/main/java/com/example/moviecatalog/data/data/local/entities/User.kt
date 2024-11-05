@@ -5,8 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_account")
 data class User(
-    val id:String,
-    val favoriteMovies:List<String>,
-    val favoriteGenres:List<String>,
-    val friends:List<Friends>
+    @PrimaryKey val id: String,
+    val nickname:String
 )
