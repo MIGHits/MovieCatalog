@@ -10,9 +10,10 @@ import com.example.moviecatalog.presentation.entity.UserShortModelUI
 import com.example.moviecatalog.presentation.view.adapter.MovieCollectionRecyclerAdapter.MovieAdapterViewHolder
 import com.squareup.picasso.Picasso
 
-class FriendListAdapter : RecyclerView.Adapter<FriendListAdapter.FriendListViewHolder>() {
-    var data: MutableList<UserShortModelUI> =
-        emptyList<UserShortModelUI>().toMutableList()
+class FriendListAdapter(private val deleteFriend: (String) -> Unit) :
+    RecyclerView.Adapter<FriendListAdapter.FriendListViewHolder>() {
+    var data:List<UserShortModelUI> =
+        emptyList<UserShortModelUI>()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
@@ -22,6 +23,7 @@ class FriendListAdapter : RecyclerView.Adapter<FriendListAdapter.FriendListViewH
         val binding = FriendListItemBinding.bind(itemView)
         val avatar = binding.friendAvatar
         val name = binding.friendName
+        val deleteIcon = binding.deleteButton
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendListViewHolder {
@@ -42,6 +44,7 @@ class FriendListAdapter : RecyclerView.Adapter<FriendListAdapter.FriendListViewH
                 .centerCrop()
                 .into(avatar)
             name.text = data[position].nickName
+            deleteIcon.setOnClickListener { deleteFriend(data[position].userId) }
         }
     }
 }

@@ -40,20 +40,24 @@ class MovieScreenViewModel(
             emptyList<MovieElementModelUI>().toMutableList()
         )
 
-    val blackList:StateFlow<MutableList<MovieElementModelUI>> get() = _blackList
+    val blackList: StateFlow<MutableList<MovieElementModelUI>> get() = _blackList
+
+    fun clearBlackList() {
+        _blackList.value = emptyList<MovieElementModelUI>().toMutableList()
+    }
 
     fun addNewPageToCollection(page: Int) = viewModelScope.launch {
         getMoviePage(page).join()
         val newPage = _moviePage.value?.filter { it !in _blackList.value }
         _movieCollection.value = newPage?.toMutableList()
-        _movieCollection.value?.forEach {movie -> banMovie(movie) }
+        _movieCollection.value?.forEach { movie -> banMovie(movie) }
     }
 
-    fun banPage(movies:List<MovieElementModelUI>){
+    fun banPage(movies: List<MovieElementModelUI>) {
         movies.let { _blackList.value.addAll(it) }
     }
 
-    fun banMovie(movie:MovieElementModelUI){
+    fun banMovie(movie: MovieElementModelUI) {
         movie.let { _blackList.value.add(it) }
     }
 

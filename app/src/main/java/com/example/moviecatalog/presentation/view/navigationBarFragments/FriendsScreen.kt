@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class FriendsScreen : Fragment(R.layout.user_friends) {
     private var binding: UserFriendsBinding? = null
     private lateinit var viewModel: FriendsScreenViewModel
-    private var  userId:String? = null
+    private var userId: String? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -29,13 +29,16 @@ class FriendsScreen : Fragment(R.layout.user_friends) {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        userId =  arguments?.getString("userId")
+        userId = arguments?.getString("userId")
         binding = UserFriendsBinding.bind(view)
+        val deleteFriendCb: (String) -> Unit =
+            { friendId -> userId?.let { viewModel.deleteFriend(friendId, it) } }
+
         binding?.backButton?.setOnClickListener {
             findNavController().navigate(R.id.action_friendsScreen_to_profileScreen)
         }
         val friendList = binding?.friendRecycler
-        friendList?.adapter = FriendListAdapter()
+        friendList?.adapter = FriendListAdapter(deleteFriendCb)
         friendList?.layoutManager = GridLayoutManager(
             requireContext(),
             3,
@@ -55,8 +58,7 @@ class FriendsScreen : Fragment(R.layout.user_friends) {
         lifecycleScope.launch {
             userId?.let { viewModel.getFriends(it).join() }
             viewModel.friends?.collect { friends ->
-                adapter.data.addAll(friends)
-                adapter.notifyDataSetChanged()
+                adapter.data = friends
             }
         }
     }

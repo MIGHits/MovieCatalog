@@ -42,7 +42,7 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.clearBlackList()
         binding = MoviesScreenBinding.bind(view)
         val randomMovieBtn = binding?.randomMovie
         val progressBar = binding?.progressBar

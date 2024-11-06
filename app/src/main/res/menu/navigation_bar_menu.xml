@@ -11,7 +11,7 @@
             android:title="@string/films" />
 
         <item
-            android:id="@+id/library"
+            android:id="@+id/favoriteScreen"
             android:icon="@drawable/library_selector"
             android:title="@string/library" />
 

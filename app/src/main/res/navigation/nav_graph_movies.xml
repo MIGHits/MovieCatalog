@@ -48,4 +48,12 @@
             android:name="userId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/favoriteScreen"
+        android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.FavoriteScreen"
+        android:label="FavoriteScreen" >
+        <action
+            android:id="@+id/action_favoriteScreen_to_movieDetails2"
+            app:destination="@id/movieDetails2" />
+    </fragment>
 </navigation>
