@@ -15,7 +15,7 @@ class DbFriendsMapper {
         )
     }
 
-    fun map(friendList: List<Friends>): List<Friend> {
-        return friendList.map { map(it) }
+    fun map(friendList: Flow<List<Friends>>): Flow<List<Friend>> {
+        return friendList.map { data -> data.map { map(it) } }
     }
 }

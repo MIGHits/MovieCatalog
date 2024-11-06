@@ -24,6 +24,7 @@ import com.example.moviecatalog.data.data.repository.ReviewRepositoryImpl
 import com.example.moviecatalog.data.data.repository.UserRepositoryImpl
 import com.example.moviecatalog.data.data.storage.PrefsTokenStorage
 import com.example.moviecatalog.domain.usecase.AddFavoritegenreUseCase
+import com.example.moviecatalog.domain.usecase.AddFriendUseCase
 import com.example.moviecatalog.domain.usecase.AddReviewUseCase
 import com.example.moviecatalog.domain.usecase.AddUserDbUseCase
 import com.example.moviecatalog.domain.usecase.DateConverterUseCase
@@ -32,9 +33,9 @@ import com.example.moviecatalog.domain.usecase.DeleteReviewUseCase
 import com.example.moviecatalog.domain.usecase.EditReviewUseCase
 import com.example.moviecatalog.domain.usecase.GetDirectorPosterUseCase
 import com.example.moviecatalog.domain.usecase.GetFavoriteGenresUseCase
+import com.example.moviecatalog.domain.usecase.GetFriendsUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieDetailsUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieRatingsUseCase
-import com.example.moviecatalog.domain.usecase.GetUserDbUseCase
 import com.example.moviecatalog.domain.usecase.GetUserProfileDataUseCase
 import com.example.moviecatalog.presentation.mappers.MovieDetailsMapperUI
 import com.example.moviecatalog.presentation.mappers.ProfileUIMapper
@@ -104,7 +105,6 @@ class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
             ProfileUIMapper(),
             DateConverterUseCase(),
             com.example.moviecatalog.presentation.mappers.GenreMapper(),
-            UserMapper(),
             AddUserDbUseCase(
                 DatabaseRepositoryImpl(
                     DbUserMapper(),
@@ -113,7 +113,16 @@ class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
                         ()
                 )
             ),
-            GetUserDbUseCase(
+            UserMapper(),
+            AddFriendUseCase(
+                DatabaseRepositoryImpl(
+                    DbUserMapper(),
+                    DbFriendsMapper(), DbGenresToDomain
+                        (), BanedMoviesMapper
+                        ()
+                )
+            ),
+            GetFriendsUseCase(
                 DatabaseRepositoryImpl(
                     DbUserMapper(),
                     DbFriendsMapper(), DbGenresToDomain

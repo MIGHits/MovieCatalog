@@ -70,6 +70,7 @@ import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.presentation.entity.GenreModelUI
 import com.example.moviecatalog.presentation.entity.ReviewModelUI
 import com.example.moviecatalog.presentation.entity.UserReviewUI
+import com.example.moviecatalog.presentation.entity.UserShortModelUI
 import com.example.moviecatalog.presentation.theme.backgroundColor
 import com.example.moviecatalog.presentation.theme.darkFaded
 import com.example.moviecatalog.presentation.theme.fadeoutFirst
@@ -91,6 +92,7 @@ class MovieDetails : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         WindowInsetsControllerCompat(window, window.decorView).let { controller ->
             controller.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
@@ -98,6 +100,7 @@ class MovieDetails : ComponentActivity() {
         }
 
         movieId = intent.extras?.getString(MOVIE_ID).toString()
+
         viewModel = ViewModelProvider(
             this,
             MovieDetailsViewModelFactory()
@@ -105,9 +108,8 @@ class MovieDetails : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.getUserData().join()
-            viewModel.addUser().join()
-            viewModel.getUser().join()
             viewModel.getFavoriteGenres().join()
+            viewModel.getFriends().join()
             viewModel.getDetails(movieId).join()
         }
 
@@ -128,10 +130,14 @@ class MovieDetails : ComponentActivity() {
     fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
         val details by remember { viewModel.movieDetails }
         val user by remember { viewModel.userProfile }
-        val users by remember { viewModel.users }
         val favorites = viewModel.favorites?.collectAsState(emptyList())
+        val friends = viewModel.friends?.collectAsState(emptyList())
         val scrollState = rememberLazyListState()
         var isVisible by remember { mutableStateOf(false) }
+
+        val handleFriendAdd: (UserShortModelUI) -> Unit = { friend ->
+            viewModel.addFriend(friend)
+        }
 
         LaunchedEffect(scrollState) {
             snapshotFlow { scrollState.firstVisibleItemIndex }
@@ -172,7 +178,7 @@ class MovieDetails : ComponentActivity() {
                     )
                 }
                 item {
-                    FriendsBlock()
+                    friends?.let { FriendsBlock(it.value, handleFriendAdd) }
                     details.description?.let { MovieDescription(it) }
 
                     if (details.mcRating != null) {
@@ -204,7 +210,7 @@ class MovieDetails : ComponentActivity() {
                         details.budget,
                         details.fees
                     )
-                    details.reviews?.let { ReviewBlock(it, details.id, user.id) }
+                    details.reviews?.let { ReviewBlock(it, details.id, user.id, handleFriendAdd) }
                 }
             }
         }
@@ -318,7 +324,10 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun FriendsBlock() {
+    fun FriendsBlock(
+        friendList: List<UserShortModelUI>,
+        addFriend: (UserShortModelUI) -> Unit
+    ) {
         Box(
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -328,12 +337,14 @@ class MovieDetails : ComponentActivity() {
         ) {
             Row(modifier = Modifier.padding(16.dp)) {
                 Box() {
-                    val list = listOf(
-                        drawable.active_profile,
-                        drawable.profile_image,
-                        drawable.profile_image
-                    )
-                    LazyRow() { items(list) { item -> FriendsAvatar(item.toString(), null) } }
+                    LazyRow() {
+                        items(friendList) { item ->
+                            FriendsAvatar(
+                                item,
+                                addFriend
+                            )
+                        }
+                    }
                 }
                 Text(
                     modifier = Modifier.padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
@@ -586,7 +597,12 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun ReviewBlock(reviews: List<ReviewModelUI>, movieId: String, userId: String) {
+    fun ReviewBlock(
+        reviews: List<ReviewModelUI>,
+        movieId: String,
+        userId: String,
+        addFriend: (UserShortModelUI) -> Unit
+    ) {
         val reviewsCount = reviews.size
         var userReview by remember {
             mutableStateOf(
@@ -656,11 +672,11 @@ class MovieDetails : ComponentActivity() {
                                 reviews[current].author.userId == userId
                             ) {
                                 FriendsAvatar(
-                                    reviews[current].author.avatar.toString(),
-                                    null
+                                    reviews[current].author,
+                                    addFriend
                                 )
                             } else {
-                                FriendsAvatar(INITIAL_FIELD_STATE, null)
+                                FriendsAvatar(null) {}
                             }
 
                             Column(
@@ -1013,16 +1029,16 @@ fun MovieRating(logo: Int, rating: String? = null, modifier: Modifier) {
 
 
 @Composable
-fun FriendsAvatar(userAvatar: String, addFriend: Job?) {
+fun FriendsAvatar(user: UserShortModelUI?, addFriend: (UserShortModelUI) -> Unit) {
     val guestAvatar = drawable.profile_image
     AsyncImage(
-        model = userAvatar.ifEmpty { guestAvatar },
+        model = user?.avatar?.ifEmpty { guestAvatar },
         contentDescription = null,
         modifier = Modifier
             .width(32.dp)
             .height(32.dp)
             .clip(CircleShape)
-            .clickable { },
+            .clickable { user?.let { addFriend(it) } },
         contentScale = ContentScale.Crop
     )
 }

@@ -13,7 +13,7 @@ interface DatabaseRepository {
 
     suspend fun addFriend(friend: Friend, userId: String)
 
-    suspend fun getFriendList(userId: String): List<Friend>
+    suspend fun getFriendList(userId: String):Flow<List<Friend>>
 
     suspend fun deleteFriend(friendId: String, userId: String)
 

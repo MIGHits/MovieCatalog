@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.moviecatalog.data.data.local.entities.Friends
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FriendsDao {
@@ -13,7 +14,7 @@ interface FriendsDao {
     suspend fun addFriend(friend: Friends)
 
     @Query("SELECT * FROM user_friends WHERE userId =:userId")
-    suspend fun getUserFriends(userId: String): List<Friends>
+    fun getUserFriends(userId: String): Flow<List<Friends>>
 
     @Query("DELETE FROM user_friends WHERE id =:friendId AND userId =:userId")
     suspend fun deleteFriend(friendId: String, userId: String)

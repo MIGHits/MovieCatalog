@@ -46,7 +46,7 @@ class DatabaseRepositoryImpl(
         )
     }
 
-    override suspend fun getFriendList(userId: String): List<Friend> {
+    override suspend fun getFriendList(userId: String): Flow<List<Friend>> {
         return dbFriendsMapper.map(db.friendsDao().getUserFriends(userId))
     }
 
