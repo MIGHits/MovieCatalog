@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 
 class MovieScreen : Fragment(R.layout.movies_screen) {
-    private lateinit var binding: MoviesScreenBinding
+    private var binding: MoviesScreenBinding? = null
     private lateinit var viewModel: MovieScreenViewModel
     private lateinit var moviePage: List<MovieElementModelUI>
 
@@ -44,34 +44,45 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = MoviesScreenBinding.bind(view)
-        val randomMovieBtn = binding.randomMovie
-        val progressBar = binding.progressBar
-        val topMovieRecycler = binding.movieHorizontalRecyclerTop
+        val randomMovieBtn = binding?.randomMovie
+        val progressBar = binding?.progressBar
+        val topMovieRecycler = binding?.movieHorizontalRecyclerTop
         val adapterTop = MovieAdapterTop()
         val snapHelperTop = LinearSnapHelper()
         val snapHelperFavorites = LinearSnapHelper()
-        val favoritesRecycler = binding.favoriteMoviesRecycler
-        val movieCollectionRecycler = binding.movieCollectionRecycler
+        val favoritesRecycler = binding?.favoriteMoviesRecycler
+        val movieCollectionRecycler = binding?.movieCollectionRecycler
 
 
-        randomMovieBtn.setOnClickListener {
+        randomMovieBtn?.setOnClickListener {
 
         }
         lifecycleScope.launch {
-            initMovieStoriesCarousel(
-                topMovieRecycler,
-                adapterTop,
-                progressBar,
-                snapHelperTop
-            ).join()
+            if (topMovieRecycler != null) {
+                if (progressBar != null) {
+                    initMovieStoriesCarousel(
+                        topMovieRecycler,
+                        adapterTop,
+                        progressBar,
+                        snapHelperTop
+                    ).join()
+                }
+            }
 
-            initFavorites(
-                favoritesRecycler,
-                snapHelperFavorites
-            )
+            favoritesRecycler?.let {
+                initFavorites(
+                    it,
+                    snapHelperFavorites
+                )
+            }
 
-            initMovieCollection(movieCollectionRecycler)
+            movieCollectionRecycler?.let { initMovieCollection(it) }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     private fun initMovieStoriesCarousel(

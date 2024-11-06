@@ -3,7 +3,6 @@
     <style name="ratingFontStyle">
         <item name="android:textSize">12sp</item>
         <item name="android:fontWeight">500</item>
-        <item name="android:lineHeight">14.4sp</item>
         <item name="android:fontFamily">@font/manrope_bold</item>
         <item name="android:textColor">@color/white</item>
     </style>

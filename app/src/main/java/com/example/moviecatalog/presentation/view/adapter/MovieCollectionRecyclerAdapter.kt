@@ -22,13 +22,15 @@ class MovieCollectionRecyclerAdapter() :
     private val symbols = DecimalFormatSymbols(Locale.getDefault())
     var data: MutableList<MovieElementModelUI> =
         emptyList<MovieElementModelUI>().toMutableList()
-
+        set(newValue) {
+            field = newValue
+            notifyDataSetChanged()
+        }
 
     class MovieAdapterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = MovieCollectionItemBinding.bind(itemView)
         val moviePoster = binding.moviePoster
         val movieRating = binding.movieRating
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdapterViewHolder {

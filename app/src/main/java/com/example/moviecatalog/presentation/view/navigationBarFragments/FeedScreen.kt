@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class FeedScreen : Fragment(R.layout.feed_screen) {
-    private lateinit var binding: FeedScreenBinding
+    private var binding: FeedScreenBinding? = null
     private lateinit var movieModel: MovieElementModelUI
     private lateinit var viewModel: FeedViewModel
 
@@ -41,12 +41,12 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FeedScreenBinding.bind(view)
-        binding.imageSwitcher.clipToOutline = true
+        binding?.imageSwitcher?.clipToOutline = true
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
-        val imageSwitcher = binding.imageSwitcher
+        val imageSwitcher = binding?.imageSwitcher
 
-        imageSwitcher.setOnClickListener {
+        imageSwitcher?.setOnClickListener {
             bundle.putString(MOVIE_ID, movieModel.id)
             findNavController()
                 .navigate(R.id.action_feedScreen_to_movieDetails, bundle)
@@ -54,7 +54,12 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
 
         subscribeMovieViewModel(viewModel)
         setMovieInfo()
-        movieSwipe(imageSwitcher)
+        imageSwitcher?.let { movieSwipe(it) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -124,9 +129,9 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
         this.lifecycleScope.launch {
             viewModel.getMovie().join()
             val movieCountryInfo = movieModel.country + "•" + movieModel.year
-            val imageView = binding.imageSwitcher
+            val imageView = binding?.imageSwitcher
             Picasso.get().load(movieModel.poster).into(imageView)
-            binding.apply {
+            binding?.apply {
                 movieTittle.text = movieModel.name
                 movieCountry.text = movieCountryInfo
 
@@ -135,13 +140,13 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                         isGenreFavorite(movieModel.genres?.get(i)?.name, i)
                     }
                 }
-                imageSwitcher.setImageDrawable(imageView.drawable)
+                imageSwitcher.setImageDrawable(imageView?.drawable)
             }
         }
     }
 
     private fun isGenreFavorite(genre: String?, index: Int) {
-        binding.apply {
+        binding?.apply {
             val genres = listOf(firstGenre, secondGenre, thirdGenre)
             genres[index].text = genre
             genres[index].setBackgroundResource(R.drawable.genres_card_style)

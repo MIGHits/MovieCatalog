@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_profileScreen_to_movieDetails"
             app:destination="@id/movieDetails2" />
+        <action
+            android:id="@+id/action_profileScreen_to_friendsScreen"
+            app:destination="@id/friendsScreen" />
     </fragment>
     <activity
         android:id="@+id/movieDetails2"
@@ -34,4 +37,15 @@
         android:label="MovieDetails">
         <argument android:name="MovieId" />
     </activity>
+    <fragment
+        android:id="@+id/friendsScreen"
+        android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.FriendsScreen"
+        android:label="FriendsScreen" >
+        <action
+            android:id="@+id/action_friendsScreen_to_profileScreen"
+            app:destination="@id/profileScreen" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>

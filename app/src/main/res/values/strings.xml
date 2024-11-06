@@ -58,5 +58,6 @@
     <string name="editReview">Изменить отзыв</string>
     <string name="addNewReview">Добавить отзыв</string>
     <string name="EditReview">Изменить отзыв</string>
+    <string name="myFriends">Мои Друзья</string>
 
 </resources>

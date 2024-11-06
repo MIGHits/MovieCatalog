@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.DAY_GREETINGS
 import com.example.moviecatalog.common.Constants.EVENING_GREETINGS
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
 
 
 class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
-    private lateinit var binding: ProfileScreenBinding
+    private var binding: ProfileScreenBinding? = null
     private lateinit var viewModel: ProfileViewModel
     private lateinit var time: String
     private lateinit var profile: ProfileModelUI
@@ -43,12 +44,12 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ProfileScreenBinding.bind(view)
-
-        binding.profileAvatar.setOnClickListener {
+        val bundle = Bundle()
+        binding?.profileAvatar?.setOnClickListener {
             avatarDialog.show(childFragmentManager, null)
         }
 
-        binding.logoutButton.setOnClickListener {
+        binding?.logoutButton?.setOnClickListener {
             lifecycleScope.launch {
                 viewModel.logout().join()
                 logoutNavigate()
@@ -60,6 +61,13 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
             subscribeProfile()
             viewModel.getCurrentTime()
             subscribeTime()
+        }
+
+        binding?.friendsAvatars?.setOnClickListener {
+            bundle.putString("userId", profile.id)
+            findNavController().navigate(
+                R.id.action_profileScreen_to_friendsScreen, bundle
+            )
         }
     }
 
@@ -79,7 +87,7 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
     }
 
     private fun updateUIState() {
-        binding.apply {
+        binding?.apply {
             profileLogin.text = profile.nickName
             profileEmail.text = profile.email
             profileName.text = profile.name
@@ -98,8 +106,8 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
 
             when (profile.gender) {
                 1 -> {
-                    binding.female.setBackgroundResource(R.drawable.gender_button_primary)
-                    binding.male.setBackgroundResource(R.color.DarkFaded)
+                    binding?.female?.setBackgroundResource(R.drawable.gender_button_primary)
+                    binding?.male?.setBackgroundResource(R.color.DarkFaded)
                 }
             }
         }
@@ -107,13 +115,13 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
 
     private fun updateTimeUI(currentHour: String) {
         val parcedTime = currentHour.toInt()
-        val greetings = binding.greetings
+        val greetings = binding?.greetings
 
         when (parcedTime) {
-            in 6..11 -> greetings.text = MORNING_GREETINGS
-            in 12..17 -> greetings.text = DAY_GREETINGS
-            in 18..23 -> greetings.text = EVENING_GREETINGS
-            in 0..5 -> greetings.text = NIGHT_GREETINGS
+            in 6..11 -> greetings?.text = MORNING_GREETINGS
+            in 12..17 -> greetings?.text = DAY_GREETINGS
+            in 18..23 -> greetings?.text = EVENING_GREETINGS
+            in 0..5 -> greetings?.text = NIGHT_GREETINGS
         }
 
     }
