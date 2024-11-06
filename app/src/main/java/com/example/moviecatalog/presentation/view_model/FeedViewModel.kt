@@ -3,6 +3,8 @@ package com.example.moviecatalog.presentation.view_model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
+import com.example.moviecatalog.domain.entity.UserShortModel
+import com.example.moviecatalog.domain.usecase.AddUserDbUseCase
 import com.example.moviecatalog.domain.usecase.GetFavoriteGenresUseCase
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
 import com.example.moviecatalog.domain.usecase.GetUserProfileDataUseCase
@@ -22,7 +24,7 @@ class FeedViewModel(
     private val genreMapper: GenreMapper = GenreMapper(),
     private val getFavorites: GetFavoriteGenresUseCase,
     private val getProfile:GetUserProfileDataUseCase,
-    private val profileUIMapper: ProfileUIMapper
+    private val profileUIMapper: ProfileUIMapper,
 ) : ViewModel() {
     private val _movieModel =
         MutableStateFlow(MovieElementModelUI(id = INITIAL_FIELD_STATE))
@@ -53,6 +55,8 @@ class FeedViewModel(
                 genres = randomMovie?.genres?.let { genreMapper.map(it) }
             )
         }
+
+
 
     fun getFavoriteGenres(userId: String) = viewModelScope.launch(Dispatchers.IO) {
         genreMapper.flowMap(getFavorites(userId)).collect { genres ->
