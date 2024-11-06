@@ -56,8 +56,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
-                android:layout_height="292dp"
+                android:layout_height="0dp"
                 android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/randomMovie">
 
@@ -88,9 +89,11 @@
                     android:id="@+id/favoriteMoviesRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:clipChildren="false"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/likedMovies" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -115,8 +118,9 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/movieCollectionRecycler"
-                    android:layout_width="364dp"
-                    android:layout_height="514dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="128dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

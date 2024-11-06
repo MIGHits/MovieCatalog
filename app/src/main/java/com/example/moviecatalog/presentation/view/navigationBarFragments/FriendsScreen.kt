@@ -31,6 +31,7 @@ class FriendsScreen : Fragment(R.layout.user_friends) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userId = arguments?.getString("userId")
         binding = UserFriendsBinding.bind(view)
+
         val deleteFriendCb: (String) -> Unit =
             { friendId -> userId?.let { viewModel.deleteFriend(friendId, it) } }
 

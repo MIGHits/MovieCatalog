@@ -10,22 +10,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.R.*
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.databinding.SignInScreenBinding
 import com.example.moviecatalog.presentation.entity.FieldAction
 import com.example.moviecatalog.presentation.entity.LoginCredentials
+import com.example.moviecatalog.presentation.state.LoginState
 import com.example.moviecatalog.presentation.state.LoginUiState
 import com.example.moviecatalog.presentation.view.MainActivity
 import com.example.moviecatalog.presentation.view_model.LoginViewModel
 import com.example.moviecatalog.presentation.view_model.LoginViewModelFactory
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SignInScreen : Fragment(layout.sign_in_screen) {
     private var binding: SignInScreenBinding? = null
     private lateinit var loginCredentials: LoginCredentials
     private lateinit var loginUIState: LoginUiState
+    private lateinit var loginState: LoginState
     private lateinit var viewModel: LoginViewModel
 
     override fun onAttach(context: Context) {
@@ -48,13 +52,14 @@ class SignInScreen : Fragment(layout.sign_in_screen) {
 
         binding?.entry?.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.loginUser(requireContext()).join()
+                viewModel.loginUser().join()
                 subscribeErrorMessage()
             }
         }
 
         subscribeLogin(viewModel)
         subscribeLoginUi(viewModel)
+        subscribeLoginState(viewModel)
         setListeners(viewModel)
         setValidationFields(viewModel)
     }
@@ -105,6 +110,17 @@ class SignInScreen : Fragment(layout.sign_in_screen) {
         this.lifecycleScope.launch {
             viewModel.loginUIState.collect { value: LoginUiState ->
                 loginUIState = value
+            }
+        }
+    }
+
+    private fun subscribeLoginState(viewModel: LoginViewModel) {
+        this.lifecycleScope.launch {
+            viewModel.loginState.collect { state ->
+                loginState = state
+                if (loginState == LoginState.SUCCES) {
+                    findNavController().navigate(R.id.action_signInScreen_to_appNavigationActivity)
+                }
             }
         }
     }

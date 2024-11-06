@@ -42,6 +42,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FeedScreenBinding.bind(view)
         binding?.imageSwitcher?.clipToOutline = true
+
         super.onViewCreated(view, savedInstanceState)
         val bundle = Bundle()
         val imageSwitcher = binding?.imageSwitcher

@@ -68,6 +68,7 @@ import com.example.moviecatalog.R
 import com.example.moviecatalog.R.drawable
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.presentation.entity.GenreModelUI
+import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import com.example.moviecatalog.presentation.entity.ReviewModelUI
 import com.example.moviecatalog.presentation.entity.UserReviewUI
 import com.example.moviecatalog.presentation.entity.UserShortModelUI
@@ -107,9 +108,6 @@ class MovieDetails : ComponentActivity() {
         ).get(MovieDetailsViewModel::class.java)
 
         lifecycleScope.launch {
-            viewModel.getUserData().join()
-            viewModel.getFavoriteGenres().join()
-            viewModel.getFriends().join()
             viewModel.getDetails(movieId).join()
         }
 
@@ -130,10 +128,14 @@ class MovieDetails : ComponentActivity() {
     fun MovieDetailsScreen(viewModel: MovieDetailsViewModel) {
         val details by remember { viewModel.movieDetails }
         val user by remember { viewModel.userProfile }
+        val favoriteMovies by remember { viewModel.favoriteMovies }
         val favorites = viewModel.favorites?.collectAsState(emptyList())
         val friends = viewModel.friends?.collectAsState(emptyList())
         val scrollState = rememberLazyListState()
         var isVisible by remember { mutableStateOf(false) }
+
+        val addFavorite: (String) -> Unit = { movie -> viewModel.addFavoriteMovie(movie) }
+        val deleteFavorite: (String) -> Unit = { movie -> viewModel.deleteFavoriteMovie(movie) }
 
         val handleFriendAdd: (UserShortModelUI) -> Unit = { friend ->
             viewModel.addFriend(friend)
@@ -158,7 +160,7 @@ class MovieDetails : ComponentActivity() {
                 isVisible
             )
 
-            details.name?.let { TopBar(it, isVisible) }
+            details.name?.let { TopBar(it, isVisible, addFavorite, deleteFavorite, favoriteMovies) }
 
             LazyColumn(
                 state = scrollState,
@@ -217,7 +219,29 @@ class MovieDetails : ComponentActivity() {
     }
 
     @Composable
-    fun TopBar(movieTittle: String, isVisible: Boolean) {
+    fun TopBar(
+        movieTittle: String,
+        isVisible: Boolean,
+        addFavorite: (String) -> Unit,
+        deleteFavorite: (String) -> Unit,
+        favoritesList: List<MovieElementModelUI>
+    ) {
+        var isFavoriteState by remember { mutableStateOf(false) }
+        var favButtonModifier: Modifier = Modifier
+            .height(40.dp)
+            .width(40.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(darkFaded)
+
+        if (favoritesList.map { it.id }.contains(movieId)) isFavoriteState = true else false
+
+        if (isFavoriteState) favButtonModifier =
+            Modifier
+                .height(40.dp)
+                .width(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Gradient(listOf(gradientFirst, gradientSecond)))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -264,13 +288,16 @@ class MovieDetails : ComponentActivity() {
             }
 
             IconButton(
-                onClick = {},
-                modifier = Modifier
-                    .height(40.dp)
-                    .width(40.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color = darkFaded)
-
+                onClick = {
+                    if (isFavoriteState) {
+                        deleteFavorite(movieId)
+                        isFavoriteState = false
+                    } else {
+                        addFavorite(movieId)
+                        isFavoriteState = true
+                    }
+                },
+                modifier = favButtonModifier
             ) {
                 Icon(
                     painter = painterResource(id = drawable.heart_light_ic),

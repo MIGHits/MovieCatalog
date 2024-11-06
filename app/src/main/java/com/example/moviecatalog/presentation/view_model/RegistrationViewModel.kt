@@ -249,24 +249,25 @@ class RegistrationViewModel(
         when (exception) {
             is HttpException -> {
                 when (exception.code()) {
-                    400 -> changeErrorMessageVisibility(UNIQUE_LOGIN_ERROR)
+                    400 -> {
+                        changeErrorMessageVisibility(UNIQUE_LOGIN_ERROR)
+                        _registrationState.value = RegistrationState.ERROR
+                    }
                 }
             }
 
-            else -> changeErrorMessageVisibility(EXCEPTION_ERROR)
+            else -> {
+                changeErrorMessageVisibility(EXCEPTION_ERROR)
+                _registrationState.value = RegistrationState.ERROR
+            }
         }
     }
 
-    private fun successfulRegister(context: Context) {
-        val intent = Intent(context, AppNavigationActivity::class.java)
-        startActivity(context, intent, null)
-    }
-
-    fun registerUser(context: Context) = viewModelScope.launch(exceptionHandler) {
+    fun registerUser() = viewModelScope.launch(exceptionHandler) {
         val registrationBody = createUserAccount()
         registerUseCase(registrationBody)
         _registrationUI.value =
             _registrationUI.value.copy(registrationError = View.GONE)
-        successfulRegister(context)
+        _registrationState.value = RegistrationState.SUCCES
     }
 }

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.moviecatalog.R
 import com.example.moviecatalog.common.Constants.FEMALE
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
@@ -20,9 +21,11 @@ import com.example.moviecatalog.common.Constants.MALE
 import com.example.moviecatalog.databinding.SignUpScreenBinding
 import com.example.moviecatalog.presentation.entity.FieldAction
 import com.example.moviecatalog.presentation.entity.RegistrationCredentials
+import com.example.moviecatalog.presentation.state.RegistrationState
 import com.example.moviecatalog.presentation.state.RegistrationUIState
 import com.example.moviecatalog.presentation.view_model.RegistrationViewModel
 import com.example.moviecatalog.presentation.view_model.RegistrationViewModelFactory
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SignUpScreen : Fragment(R.layout.sign_up_screen) {
@@ -30,6 +33,7 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
     private lateinit var viewModel: RegistrationViewModel
     private lateinit var registrationCredentials: RegistrationCredentials
     private lateinit var registrationUIState: RegistrationUIState
+    private lateinit var registrationState: RegistrationState
     private val calendar = Calendar.getInstance()
 
     override fun onAttach(context: Context) {
@@ -47,6 +51,7 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
         subscribeRegistration(viewModel)
         subscribeUIState(viewModel)
         setValidationFields(viewModel)
+        subscribeRegistrationState(viewModel)
 
         binding?.backButton?.setOnClickListener {
             view.findNavController().navigate(R.id.action_signUpScreen_to_welcomeScreen)
@@ -54,7 +59,7 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
 
         binding?.register?.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.registerUser(requireContext()).join()
+                viewModel.registerUser().join()
                 applyRegistrationError()
             }
         }
@@ -181,6 +186,18 @@ class SignUpScreen : Fragment(R.layout.sign_up_screen) {
         this.lifecycleScope.launch {
             viewModel.registrationUI.collect { currentstate: RegistrationUIState ->
                 registrationUIState = currentstate
+            }
+        }
+    }
+
+    private fun subscribeRegistrationState(viewModel: RegistrationViewModel) {
+        this.lifecycleScope.launch {
+            viewModel.registrationState.collect { status ->
+                registrationState = status
+                if (registrationState == RegistrationState.SUCCES) {
+                    findNavController()
+                        .navigate(R.id.action_signUpScreen_to_appNavigationActivity)
+                }
             }
         }
     }

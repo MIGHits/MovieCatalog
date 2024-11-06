@@ -4,31 +4,38 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.State
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.moviecatalog.domain.entity.Friend
 import com.example.moviecatalog.domain.entity.UserShortModel
+import com.example.moviecatalog.domain.usecase.AddFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.AddFavoritegenreUseCase
 import com.example.moviecatalog.domain.usecase.AddFriendUseCase
 import com.example.moviecatalog.domain.usecase.AddReviewUseCase
 import com.example.moviecatalog.domain.usecase.AddUserDbUseCase
 import com.example.moviecatalog.domain.usecase.DateConverterUseCase
 import com.example.moviecatalog.domain.usecase.DeleteFavoriteGenreUseCase
+import com.example.moviecatalog.domain.usecase.DeleteFavoriteMovieUseCase
 import com.example.moviecatalog.domain.usecase.DeleteFriendUseCase
 import com.example.moviecatalog.domain.usecase.DeleteReviewUseCase
 import com.example.moviecatalog.domain.usecase.EditReviewUseCase
 import com.example.moviecatalog.domain.usecase.GetDirectorPosterUseCase
 import com.example.moviecatalog.domain.usecase.GetFavoriteGenresUseCase
+import com.example.moviecatalog.domain.usecase.GetFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.GetFriendsUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieDetailsUseCase
 import com.example.moviecatalog.domain.usecase.GetMovieRatingsUseCase
 import com.example.moviecatalog.domain.usecase.GetUserProfileDataUseCase
 import com.example.moviecatalog.presentation.entity.GenreModelUI
 import com.example.moviecatalog.presentation.entity.MovieDetailsModelUI
+import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import com.example.moviecatalog.presentation.entity.ProfileModelUI
 import com.example.moviecatalog.presentation.entity.UserReviewUI
 import com.example.moviecatalog.presentation.entity.UserShortModelUI
 import com.example.moviecatalog.presentation.mappers.GenreMapper
 import com.example.moviecatalog.presentation.mappers.MovieDetailsMapperUI
+import com.example.moviecatalog.presentation.mappers.MovieMapper
 import com.example.moviecatalog.presentation.mappers.ProfileUIMapper
 import com.example.moviecatalog.presentation.mappers.UserMapper
 import com.example.moviecatalog.presentation.mappers.UserReviewMapper
@@ -57,8 +64,11 @@ class MovieDetailsViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
     private val addFavoritegenreUseCase: AddFavoritegenreUseCase,
     private val getFavoriteGenresUseCase: GetFavoriteGenresUseCase,
-    private val deleteFavoriteGenreUseCase: DeleteFavoriteGenreUseCase
-
+    private val deleteFavoriteGenreUseCase: DeleteFavoriteGenreUseCase,
+    private val addFavoriteMoviesUseCase: AddFavoriteMoviesUseCase,
+    private val deleteFavoriteMoviesUseCase: DeleteFavoriteMovieUseCase,
+    private val getFavorites: GetFavoriteMoviesUseCase,
+    private val movieMapper: MovieMapper
 ) : ViewModel() {
     private val _movieDetails: MutableState<MovieDetailsModelUI> =
         mutableStateOf(MovieDetailsModelUI())
@@ -67,8 +77,21 @@ class MovieDetailsViewModel(
     private val _userProfile: MutableState<ProfileModelUI> = mutableStateOf(ProfileModelUI())
     val userProfile: State<ProfileModelUI> get() = _userProfile
 
+    private val _favoriteMovies: MutableState<List<MovieElementModelUI>> =
+        mutableStateOf(emptyList())
+    val favoriteMovies: State<List<MovieElementModelUI>> get() = _favoriteMovies
+
     var favorites: Flow<List<GenreModelUI>>? = null
     var friends: Flow<List<UserShortModelUI>>? = null
+
+    init {
+        viewModelScope.launch {
+            getUserData().join()
+            getFavoriteGenres().join()
+            getFriends().join()
+            getFavoriteMovies().join()
+        }
+    }
 
     fun getDetails(id: String) = viewModelScope.launch {
         _movieDetails.value =
@@ -130,6 +153,21 @@ class MovieDetailsViewModel(
                 _userProfile.value.avatarLink
             )
         )
+    }
+
+    fun addFavoriteMovie(id: String) = viewModelScope.launch {
+        addFavoriteMoviesUseCase(id)
+    }
+
+    fun deleteFavoriteMovie(id: String) = viewModelScope.launch {
+        deleteFavoriteMoviesUseCase(id)
+    }
+
+    fun getFavoriteMovies() = viewModelScope.launch {
+        val list = getFavorites()
+        if (list != null) {
+            _favoriteMovies.value = movieMapper.map(list)
+        }
     }
 
     fun addFavoriteGenre(genre: GenreModelUI) = viewModelScope.launch(Dispatchers.IO) {

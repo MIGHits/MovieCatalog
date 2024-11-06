@@ -132,26 +132,28 @@ class LoginViewModel(
         when (exception) {
             is HttpException -> {
                 when (exception.code()) {
-                    400 -> changeErrorMessageVisibility(LOGIN_EXCEPTION)
+                    400 -> {
+                        changeErrorMessageVisibility(LOGIN_EXCEPTION)
+                        _loginState.value = LoginState.ERROR
+                    }
                 }
             }
 
-            else -> changeErrorMessageVisibility(EXCEPTION_ERROR)
+            else -> {
+                changeErrorMessageVisibility(EXCEPTION_ERROR)
+                _loginState.value = LoginState.ERROR
+            }
         }
     }
 
-    private fun successfulLogin(context: Context) {
-        val intent = Intent(context, AppNavigationActivity::class.java)
-        startActivity(context, intent, null)
-    }
 
-    fun loginUser(context: Context) =
+    fun loginUser() =
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val user = createUserLogin()
             loginUseCase(user)
             _loginUIState.value =
                 _loginUIState.value.copy(exceptionErrorView = View.GONE)
-            successfulLogin(context)
+            _loginState.value = LoginState.SUCCES
 
         }
 }

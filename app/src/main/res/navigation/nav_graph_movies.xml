@@ -10,7 +10,7 @@
         android:label="FeedScreen">
         <action
             android:id="@+id/action_feedScreen_to_movieDetails"
-            app:destination="@id/movieDetails2" />
+            app:destination="@id/movieDetails" />
     </fragment>
     <fragment
         android:id="@+id/movieScreen"
@@ -18,21 +18,21 @@
         android:label="MovieScreen">
         <action
             android:id="@+id/action_movieScreen_to_movieDetails"
-            app:destination="@id/movieDetails2" />
+            app:destination="@id/movieDetails" />
     </fragment>
     <fragment
         android:id="@+id/profileScreen"
         android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.ProfileScreen"
         android:label="ProfileScreen">
         <action
-            android:id="@+id/action_profileScreen_to_movieDetails"
-            app:destination="@id/movieDetails2" />
-        <action
             android:id="@+id/action_profileScreen_to_friendsScreen"
             app:destination="@id/friendsScreen" />
+        <action
+            android:id="@+id/action_profileScreen_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <activity
-        android:id="@+id/movieDetails2"
+        android:id="@+id/movieDetails"
         android:name="com.example.moviecatalog.presentation.view.MovieDetails"
         android:label="MovieDetails">
         <argument android:name="MovieId" />
@@ -52,8 +52,9 @@
         android:id="@+id/favoriteScreen"
         android:name="com.example.moviecatalog.presentation.view.navigationBarFragments.FavoriteScreen"
         android:label="FavoriteScreen" >
-        <action
-            android:id="@+id/action_favoriteScreen_to_movieDetails2"
-            app:destination="@id/movieDetails2" />
     </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.moviecatalog.presentation.view.MainActivity"
+        android:label="MainActivity" />
 </navigation>

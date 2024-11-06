@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_signUpScreen_to_welcomeScreen"
             app:destination="@id/welcomeScreen" />
+        <action
+            android:id="@+id/action_signUpScreen_to_appNavigationActivity"
+            app:destination="@id/appNavigationActivity" />
     </fragment>
     <fragment
         android:id="@+id/signInScreen"
@@ -30,5 +33,12 @@
         <action
             android:id="@+id/action_signInScreen_to_welcomeScreen"
             app:destination="@id/welcomeScreen" />
+        <action
+            android:id="@+id/action_signInScreen_to_appNavigationActivity"
+            app:destination="@id/appNavigationActivity" />
     </fragment>
+    <activity
+        android:id="@+id/appNavigationActivity"
+        android:name="com.example.moviecatalog.presentation.view.AppNavigationActivity"
+        android:label="AppNavigationActivity" />
 </navigation>
