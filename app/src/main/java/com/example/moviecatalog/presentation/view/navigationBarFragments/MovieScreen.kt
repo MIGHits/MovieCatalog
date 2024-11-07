@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -15,6 +16,7 @@ import com.example.moviecatalog.common.Constants.MOVIE_STORY_DURATION
 import com.example.moviecatalog.databinding.MoviesScreenBinding
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import com.example.moviecatalog.presentation.mappers.MovieAdapterMapper
+import com.example.moviecatalog.presentation.view.MovieDetails.Companion.MOVIE_ID
 import com.example.moviecatalog.presentation.view.adapter.FavoriteMovieAdapter
 import com.example.moviecatalog.presentation.view.adapter.MovieAdapterTop
 import com.example.moviecatalog.presentation.view.adapter.MovieCollectionRecyclerAdapter
@@ -31,7 +33,7 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
     private var binding: MoviesScreenBinding? = null
     private lateinit var viewModel: MovieScreenViewModel
     private lateinit var moviePage: List<MovieElementModelUI>
-
+    private var bundle = Bundle()
     private val movieTopAdapterMapper = MovieAdapterMapper()
 
     override fun onAttach(context: Context) {
@@ -47,7 +49,7 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
         val randomMovieBtn = binding?.randomMovie
         val progressBar = binding?.progressBar
         val topMovieRecycler = binding?.movieHorizontalRecyclerTop
-        val adapterTop = MovieAdapterTop()
+        val adapterTop = MovieAdapterTop(viewModel)
         val snapHelperTop = LinearSnapHelper()
         val snapHelperFavorites = LinearSnapHelper()
         val favoritesRecycler = binding?.favoriteMoviesRecycler
@@ -55,7 +57,10 @@ class MovieScreen : Fragment(R.layout.movies_screen) {
 
 
         randomMovieBtn?.setOnClickListener {
-
+            val randomId = moviePage[viewModel.randomMovie(1, 6)].id
+            bundle.putString(MOVIE_ID, randomId)
+            findNavController()
+                .navigate(R.id.action_movieScreen_to_movieDetails, bundle)
         }
         lifecycleScope.launch {
             if (topMovieRecycler != null) {

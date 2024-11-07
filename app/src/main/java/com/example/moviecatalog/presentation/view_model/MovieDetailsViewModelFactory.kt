@@ -49,55 +49,43 @@ import com.example.moviecatalog.presentation.mappers.UserMapper
 
 class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val movieRepo = MovieRepositoryImpl(
+            MovieServiceProvider(),
+            MovieModelMapper(),
+            PageInfoMapper(),
+            MovieDetailsMapper(),
+            KinopoiskMovieMapper(),
+            DirectorMapper()
+        )
+        val reviewRepo = ReviewRepositoryImpl(
+            PrefsTokenStorage, ReviewServiceProvider(),
+            UserReviewMapper()
+        )
+        val dbRepo = DatabaseRepositoryImpl(
+            DbUserMapper(),
+            DbFriendsMapper(), DbGenresToDomain
+                (), BanedMoviesMapper
+                ()
+        )
         return MovieDetailsViewModel(
             GetMovieDetailsUseCase(
-                MovieRepositoryImpl(
-                    MovieServiceProvider(),
-                    MovieModelMapper(GenreMapper()),
-                    PageInfoMapper(),
-                    MovieDetailsMapper(),
-                    KinopoiskMovieMapper(),
-                    DirectorMapper()
-                )
+                movieRepo
             ),
             MovieDetailsMapperUI(),
             GetMovieRatingsUseCase(
-                MovieRepositoryImpl(
-                    MovieServiceProvider(),
-                    MovieModelMapper(),
-                    PageInfoMapper(),
-                    MovieDetailsMapper(),
-                    KinopoiskMovieMapper(),
-                    DirectorMapper()
-                )
+                movieRepo
             ),
             GetDirectorPosterUseCase(
-                MovieRepositoryImpl(
-                    MovieServiceProvider(),
-                    MovieModelMapper(),
-                    PageInfoMapper(),
-                    MovieDetailsMapper(),
-                    KinopoiskMovieMapper(),
-                    DirectorMapper()
-                )
+                movieRepo
             ),
             AddReviewUseCase(
-                ReviewRepositoryImpl(
-                    PrefsTokenStorage, ReviewServiceProvider(),
-                    UserReviewMapper()
-                )
+                reviewRepo
             ),
             EditReviewUseCase(
-                ReviewRepositoryImpl(
-                    PrefsTokenStorage, ReviewServiceProvider(),
-                    UserReviewMapper()
-                )
+                reviewRepo
             ),
             DeleteReviewUseCase(
-                ReviewRepositoryImpl(
-                    PrefsTokenStorage, ReviewServiceProvider(),
-                    UserReviewMapper()
-                )
+                reviewRepo
             ),
             com.example.moviecatalog.presentation.mappers.UserReviewMapper(),
             GetUserProfileDataUseCase(
@@ -112,53 +100,23 @@ class MovieDetailsViewModelFactory() : ViewModelProvider.Factory {
             DateConverterUseCase(),
             com.example.moviecatalog.presentation.mappers.GenreMapper(),
             AddUserDbUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ),
             UserMapper(),
             AddFriendUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ),
             GetFriendsUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ),
             AddFavoritegenreUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ),
             GetFavoriteGenresUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ),
             DeleteFavoriteGenreUseCase(
-                DatabaseRepositoryImpl(
-                    DbUserMapper(),
-                    DbFriendsMapper(), DbGenresToDomain
-                        (), BanedMoviesMapper
-                        ()
-                )
+                dbRepo
             ), AddFavoriteMoviesUseCase(
                 FavoriteMoviesRepositoryImpl(
                     PrefsTokenStorage,

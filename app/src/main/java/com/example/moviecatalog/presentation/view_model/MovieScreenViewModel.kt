@@ -3,16 +3,15 @@ package com.example.moviecatalog.presentation.view_model
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.domain.usecase.GetFavoriteMoviesUseCase
 import com.example.moviecatalog.domain.usecase.GetMoviePageUseCase
 import com.example.moviecatalog.presentation.entity.MovieElementModelUI
 import com.example.moviecatalog.presentation.mappers.MovieMapper
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import kotlin.random.Random
 
@@ -39,8 +38,6 @@ class MovieScreenViewModel(
         MutableStateFlow(
             emptyList<MovieElementModelUI>().toMutableList()
         )
-
-    val blackList: StateFlow<MutableList<MovieElementModelUI>> get() = _blackList
 
     fun clearBlackList() {
         _blackList.value = emptyList<MovieElementModelUI>().toMutableList()
@@ -69,6 +66,7 @@ class MovieScreenViewModel(
         _moviePage.value =
             getMoviePageUseCase(page).movies?.let { movieMapper.map(it) }
     }
+
 
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         when (exception) {

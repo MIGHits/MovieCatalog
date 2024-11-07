@@ -1,10 +1,12 @@
 package com.example.moviecatalog.data.data.storage
 
 import android.content.Context
+import android.util.Log
 import com.example.moviecatalog.common.Constants.INITIAL_FIELD_STATE
 import com.example.moviecatalog.common.Constants.PREFS_NAME
 import com.example.moviecatalog.common.Constants.TOKEN_KEY
 import com.example.moviecatalog.MovieCatalogApplication
+import com.example.moviecatalog.common.Constants.BEARER
 import com.example.moviecatalog.data.data.remote.entities.Token
 
 object PrefsTokenStorage : TokenStorage {
@@ -14,7 +16,7 @@ object PrefsTokenStorage : TokenStorage {
 
     override fun getToken(): Token {
         return Token(
-            ("Bearer " + sharedPreferences.getString(TOKEN_KEY, INITIAL_FIELD_STATE))
+            (BEARER + sharedPreferences.getString(TOKEN_KEY, INITIAL_FIELD_STATE))
         )
     }
 
@@ -23,7 +25,7 @@ object PrefsTokenStorage : TokenStorage {
     }
 
     override fun removeToken() {
-        editor.remove(TOKEN_KEY)
+        editor.clear().apply()
     }
 
 }

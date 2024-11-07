@@ -15,12 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MovieCatalog"
         tools:targetApi="31">
+        <activity android:name=".presentation.view.MainActivity" />
         <activity
             android:name=".presentation.view.MovieDetails"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".presentation.view.MainActivity"
+            android:name=".presentation.view.LaunchScreen"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -1,16 +1,22 @@
 package com.example.moviecatalog.presentation.view.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviecatalog.R
 import com.example.moviecatalog.databinding.MoviesScreenTopRecyclerItemBinding
+import com.example.moviecatalog.presentation.view.MovieDetails.Companion.MOVIE_ID
+import com.example.moviecatalog.presentation.view_model.MovieScreenViewModel
 import com.squareup.picasso.Picasso
 
-class MovieAdapterTop : RecyclerView.Adapter<MovieAdapterTop.MovieAdapterViewHolder>() {
+class MovieAdapterTop(viewModel: MovieScreenViewModel) :
+    RecyclerView.Adapter<MovieAdapterTop.MovieAdapterViewHolder>() {
     private val MAX_ITEMS = 5
     var data: List<MovieAdapterElement> = emptyList()
         set(newValue) {
@@ -23,6 +29,7 @@ class MovieAdapterTop : RecyclerView.Adapter<MovieAdapterTop.MovieAdapterViewHol
         val moviePoster = binding.currentImage
         val movieTittle = binding.movieLargeTittle
         val movieGenreFirst = binding.first
+        val watchButton = binding.watch
         val movieGenreSecond = binding.second
         val movieGenreThird = binding.third
     }

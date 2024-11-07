@@ -32,4 +32,6 @@ object Constants{
 
     const val MALE = 0
     const val FEMALE = 1
+
+    const val BEARER = "Bearer "
 }

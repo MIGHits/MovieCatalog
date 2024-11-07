@@ -127,6 +127,7 @@ class ProfileScreen : Fragment(R.layout.profile_screen), DialogResult {
     }
 
     private fun logoutNavigate() {
+
         findNavController().navigate(R.id.action_profileScreen_to_mainActivity)
         activity?.finish()
     }
