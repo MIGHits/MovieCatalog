@@ -19,16 +19,17 @@
 ## 📱 Screenshots 
 ### Welcome Screen | Sign-in Screen | Register Screen
 <table align="center" style="border: none; border-collapse: collapse; margin: 20px 0;">
-  <tr valign="top"> <td style="border: none; padding: 0 10px;"> 
-    <img src="https://github.com/user-attachments/assets/407327a0-e561-4a19-8e49-2e90f32f679f" alt="Movies Screen" width="300" /> 
-  </td> 
-    <td style="border: none; padding: 0 10px;"> 
-      <img src="https://github.com/user-attachments/assets/463ae11d-0324-4f03-828b-d8eb0bb3198b" alt="Movie Details" width="300" /> 
+  <tr valign="top">
+    <td style="border: none; padding: 0 10px;">
+      <img src="https://github.com/user-attachments/assets/2ed1f71e-0d59-4399-b62e-7845604ea66f" alt="Welcome screen" width="300" />
     </td>
-    <td style="border: none; padding: 0 10px;"> 
-      <img src="https://github.com/user-attachments/assets/08313cc3-0789-424b-aef3-37eef0074bec" alt="Movies Details Screen — Add review" width="300" />
-    </td> 
-  </tr> 
+    <td style="border: none; padding: 0 10px;">
+      <img src="https://github.com/user-attachments/assets/714c8716-b1d2-4df8-ab91-2948e68d2e41" alt="Sign-in screen" width="300" />
+    </td>
+    <td style="border: none; padding: 0 10px;">
+      <img src="https://github.com/user-attachments/assets/65599e92-db54-4e91-ae08-d3c48f0ebdd5" alt="Register screen" width="300" />
+    </td>
+  </tr>
 </table>
 
 ### Feed Screen | Favorites Screen | Profile Screen
