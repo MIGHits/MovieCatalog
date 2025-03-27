@@ -30,3 +30,10 @@
     <img src="https://github.com/user-attachments/assets/3f579c29-ae00-43dc-bf1a-ffdc01a098dc" alt="Favorites Screen" width="300" style="margin: 0 50px;" />
     <img src="https://github.com/user-attachments/assets/7c42ac74-1b85-44a8-8b04-592e3c1c488f" alt="Profile Screen" width="300" style="margin: 0 50px;" />
 </p> 
+
+ ### Movies Screen | Movie Details
+ <p>
+    <img src="https://github.com/user-attachments/assets/407327a0-e561-4a19-8e49-2e90f32f679f" alt="Movies Screen" width="300" style="margin: 0 50px;" />
+    <img src="https://github.com/user-attachments/assets/463ae11d-0324-4f03-828b-d8eb0bb3198b" alt="Movie Details" width="300" style="margin: 0 50px;" />
+    <img src="https://github.com/user-attachments/assets/08313cc3-0789-424b-aef3-37eef0074bec" alt="Movies Details Screen — Add review" width="300" style="margin: 0 50px;" />
+</p> 
