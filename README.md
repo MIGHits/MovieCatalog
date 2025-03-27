@@ -25,11 +25,20 @@
  </p>
  
  ### Feed Screen | Favorites Screen | Profile Screen
- <p>
-    <img src="https://github.com/user-attachments/assets/6856bd42-a74e-460a-bc73-db1f82d9928c" alt="Feed Screen" width="300" style="margin: 0 50px;" />
-    <img src="https://github.com/user-attachments/assets/3f579c29-ae00-43dc-bf1a-ffdc01a098dc" alt="Favorites Screen" width="300" style="margin: 0 50px;" />
-    <img src="https://github.com/user-attachments/assets/7c42ac74-1b85-44a8-8b04-592e3c1c488f" alt="Profile Screen" width="300" style="margin: 0 50px;" />
-</p> 
+<table style="border: none; border-collapse: collapse;">
+  <tr>
+    <td valign="top" align="center" style="padding: 0 50px; border: none;">
+      <img src="https://github.com/user-attachments/assets/6856bd42-a74e-460a-bc73-db1f82d9928c" alt="Feed Screen" width="300" />
+    </td>
+    <td valign="top" align="center" style="padding: 0 50px; border: none;">
+      <img src="https://github.com/user-attachments/assets/3f579c29-ae00-43dc-bf1a-ffdc01a098dc" alt="Favorites Screen" width="300" />
+    </td>
+    <td valign="top" align="center" style="padding: 0 50px; border: none;">
+      <img src="https://github.com/user-attachments/assets/7c42ac74-1b85-44a8-8b04-592e3c1c488f" alt="Profile Screen" width="300" />
+    </td>
+  </tr>
+</table>
+ 
 
 ### Movies Screen | Movie Details
 <table style="border: none; border-collapse: collapse;">
