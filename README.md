@@ -17,8 +17,6 @@
 - Material 3
 
 ## 📱 Screenshots 
-## 📱 Screenshots 
-
 ### Welcome Screen | Sign-in Screen | Register Screen
 <div align="center" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; margin: 20px 0;">
   <img src="https://github.com/user-attachments/assets/2ed1f71e-0d59-4399-b62e-7845604ea66f" alt="Welcome screen" width="300" />
@@ -34,8 +32,10 @@
 </div>
 
 ### Movies Screen | Movie Details
-<div align="center" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px; margin: 20px 0;">
-  <img src="https://github.com/user-attachments/assets/407327a0-e561-4a19-8e49-2e90f32f679f" alt="Movies Screen" width="300" />
-  <img src="https://github.com/user-attachments/assets/463ae11d-0324-4f03-828b-d8eb0bb3198b" alt="Movie Details" width="300" />
-  <img src="https://github.com/user-attachments/assets/08313cc3-0789-424b-aef3-37eef0074bec" alt="Movies Details Screen — Add review" width="300" />
-</div>
+<table style="border: none;">
+  <tr valign="top">
+    <td style="border: none;"><img src="https://github.com/user-attachments/assets/407327a0-e561-4a19-8e49-2e90f32f679f" width="300" /></td>
+    <td style="border: none;"><img src="https://github.com/user-attachments/assets/463ae11d-0324-4f03-828b-d8eb0bb3198b" width="300" /></td>
+    <td style="border: none;"><img src="https://github.com/user-attachments/assets/08313cc3-0789-424b-aef3-37eef0074bec" width="300" /></td>
+  </tr>
+</table>
