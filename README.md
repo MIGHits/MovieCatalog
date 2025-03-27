@@ -16,5 +16,8 @@
 - Material 3
 
 ## 📱 Screenshots 
-## Welcome Screen | Sign-in Screen
-![Welcome screen](https://github.com/user-attachments/assets/2ed1f71e-0d59-4399-b62e-7845604ea66f) ![Sign-in Screen](https://github.com/user-attachments/assets/714c8716-b1d2-4df8-ab91-2948e68d2e41)
+ Welcome Screen | Sign-in Screen
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/2ed1f71e-0d59-4399-b62e-7845604ea66f" alt="Welcome screen" width="300" />
+    <img src="https://github.com/user-attachments/assets/714c8716-b1d2-4df8-ab91-2948e68d2e41" alt="Sign-in screen" width="300" />
+</p>
